@@ -1,4 +1,5 @@
 package model;
+
 class Ficha {
 	private int valor;//Valor da ficha
 	
@@ -7,4 +8,9 @@ class Ficha {
 		valor = v;
 		return;
 	}
+
+	public int pegarValor() {
+		return valor;
+	}
+
 }
