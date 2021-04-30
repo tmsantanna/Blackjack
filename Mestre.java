@@ -11,14 +11,13 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 
 	public Mestre(String nome) {//Vers�o com um nome
 		jogadores.add(new Jogador(nome));
-		dealer = new Dealer();
 		shuffleBaralho();
 		return;
 	}
 	
 	private void createBaralho() {//Cria os 4 baralhos
 		int i,j;
-		int valor,num,naipe;
+		int num,naipe;
 		
 		baralho.clear();//Renicia o baralho
 		
