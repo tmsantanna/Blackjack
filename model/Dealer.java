@@ -21,7 +21,7 @@ class Dealer {
 		mesa.clear();//Clear
 		return;
 	}
-	public int caclHand() {//Calcula o melhor valor da mão considerando o valor do Às
+	public int caclMesa() {//Calcula o melhor valor da mão considerando o valor do Às
 		int temp, resultado, resultadoB;
 		List <Carta> save = new ArrayList<Carta>();
 		
