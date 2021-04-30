@@ -1,3 +1,4 @@
+package model;
 import java.util.*;
 
 class Jogador {
@@ -50,6 +51,11 @@ class Jogador {
 		public void dealCarta(Carta novaCarta){//Da uma carta para a mão do jogador
 			int tam = hand.size();
 			hand.add(novaCarta);
+			return;
+		}
+		
+		public void clearHand() {//Remove todas as cartas da mão
+			hand.clear();//Clear
 			return;
 		}
 }
