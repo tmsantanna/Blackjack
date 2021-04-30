@@ -39,12 +39,12 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 			}
 		}
 	}
+
 	private void shuffleBaralho() {//Embaralha o baralho
 		createBaralho();//Cria o baralho
 		Collections.shuffle(baralho);
 	}
-	
-	
+
 	private void addJogador(String nome) {//Adiciona jogador
 		jogadores.add(new Jogador(nome));
 		return;
@@ -63,6 +63,16 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		dealer.clearMesa();//Clear na mesa
 	}
 	
-	
-	
+	public void dealCartas() {
+		for (Jogador jogador : jogadores) {
+			jogador.dealCarta(baralho.remove(0));
+		}
+		dealer.dealCarta(baralho.remove(0), false);
+
+		for (Jogador jogador : jogadores) {
+			jogador.dealCarta(baralho.remove(0));
+		}
+		dealer.dealCarta(baralho.remove(0), true);
+	}
+
 }
