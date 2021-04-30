@@ -1,3 +1,4 @@
+package model;
 class Ficha {
 	private int valor;//Valor da ficha
 	
