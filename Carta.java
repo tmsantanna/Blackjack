@@ -1,12 +1,15 @@
+package model;
 
 class Carta {
 	private int valor;//Valor da Carta em blackjack
 	private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
 	private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
+	private boolean visible;//Se a carta está sendo vista ou não
 	
 	public Carta(int n, int na) {
 		num = n;
 		naipe = na;
+		visible = true;
 		calculaValor(n);
 		return;
 	}
@@ -30,4 +33,15 @@ class Carta {
 	public int pegaNaipe() { //Pega o numero da carta
 		return naipe;
 	}
+	
+	public void flip() {//Vira a carta
+		if (visible) {//Se ela é visivel, fica invisivel
+			visible = false;
+		}
+		else {//Se ela não é visivel, fica visivel
+			visible = true;
+		}
+	}
 }
+
+
