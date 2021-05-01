@@ -5,7 +5,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	private List<Carta> baralho = new ArrayList<Carta>();//Cartas no baralho 
 	private List<Jogador> jogadores = new ArrayList<Jogador>();
 	private Dealer dealer = new Dealer();
-	int vez;
+	int vez = 0;
 	int numJogadores;
 	
 
@@ -102,10 +102,29 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	
 	public void hit() {//Pede mais uma Carta
 		dealCarta();
+		
+		if (jogadores.get(vez).caclHand() < 21) {//Se o Jogador quebrou
+			vez++;//Passa a vez
+			vez = vez%4;//Verifica se deu volta
+		}
 		return;
 	}
 	
-	
+	private void dealerTurn() {
+		int valor;
+		
+		valor = dealer.caclMesa();
+		
+		while (valor<17) {
+			dealMesaCarta();
+			valor = dealer.caclMesa();
+		}
+		
+		if (valor<21) {
+			//Mesa Derrota
+		}
+		return;
+	}
 	private void checkBlackjack() {//Checa se ocorreu um Blackjack
 		boolean flagDealer = false;
 		boolean flagJogador = false;
@@ -130,9 +149,6 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}else if (flagJogador) {
 				//Jogador vence função
 			}
-		
-		
 		return;
-		
 	}
 }
