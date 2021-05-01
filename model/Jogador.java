@@ -5,12 +5,14 @@ class Jogador {
 		String nome;
 		private List<Carta> hand = new ArrayList<Carta>();//Carta que o jogador tem é mão
 		private List<Ficha> fichas = new ArrayList<Ficha>();//Fichas que o jogador tem
+		private List<Ficha> aposta = new ArrayList<Ficha>();//Aposta atual
 		
 		
 		public Jogador(String n) {
 			nome = n;
 			startFicha();
 		}
+		
 		
 		private void startFicha () {//Ficha para serem recebidas no inicio do jogo
 			int i;
@@ -70,15 +72,12 @@ class Jogador {
 
 			return resultado;
 		}
-
-		public int calcFichas() {
-			int total = 0;
-
-			for (Ficha ficha : fichas) {
-				total += ficha.pegarValor();
+		
+		public int fichas2Valor(List<Ficha> list){//Calcula o valor total de uma lista de fichas
+			int resultado = 0;
+			for(Ficha ficha: list) {
+				resultado += ficha.pegaValor();
 			}
-
-			return total;
+			return resultado;
 		}
-
 }
