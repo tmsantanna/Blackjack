@@ -40,6 +40,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}
 	}
 
+	
 	private void shuffleBaralho() {//Embaralha o baralho
 		createBaralho();//Cria o baralho
 		Collections.shuffle(baralho);
@@ -63,7 +64,10 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		dealer.clearMesa();//Clear na mesa
 	}
 	
-	public void dealCartas() {
+	
+	
+	
+	public void dealStart() {//Cartas no inicio da rodada
 		for (Jogador jogador : jogadores) {
 			jogador.dealCarta(baralho.remove(0));
 		}
@@ -75,4 +79,18 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		dealer.dealCarta(baralho.remove(0), true);
 	}
 
+	public void dealCarta() {//Da carta para o jogador da vez
+		jogadores.get(vez).dealCarta(baralho.remove(0));//Da a primeira carta do baralho para o jogador da vez
+	}
+	
+	public void dealCarta(Jogador jog) {//Da carta para um Jogador
+		jog.dealCarta(baralho.remove(0));
+	}
+	public void dealMesaCarta() {//Da Carta para a mesa sem Boolean
+		dealer.dealCarta(baralho.remove(0), true);
+	}
+	
+	public void dealMesaCarta(boolean visible) {//Da Carta para a mesa com Boolean
+		dealer.dealCarta(baralho.remove(0), visible);
+	}
 }
