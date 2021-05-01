@@ -12,7 +12,6 @@ class Jogador {
 			startFicha();
 		}
 		
-		
 		private void startFicha () {//Ficha para serem recebidas no inicio do jogo
 			int i;
 
@@ -70,6 +69,16 @@ class Jogador {
 			}
 
 			return resultado;
+		}
+
+		public int calcFichas() {
+			int total = 0;
+
+			for (Ficha ficha : fichas) {
+				total += ficha.pegarValor();
+			}
+
+			return total;
 		}
 
 }
