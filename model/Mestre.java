@@ -103,7 +103,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	public void hit() {//Pede mais uma Carta
 		dealCarta();
 		
-		if (jogadores.get(vez).caclHand() < 21) {//Se o Jogador quebrou
+		if (jogadores.get(vez).caclHand() > 21) {//Se o Jogador quebrou
 			vez++;//Passa a vez
 			vez = vez%4;//Verifica se deu volta
 		}
