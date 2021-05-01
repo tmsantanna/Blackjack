@@ -93,4 +93,46 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	public void dealMesaCarta(boolean visible) {//Da Carta para a mesa com Boolean
 		dealer.dealCarta(baralho.remove(0), visible);
 	}
+	
+	public void stand() {//Stand, confirma a mão atual e passa a vez
+		vez++;//Passa a vez
+		vez = vez%4;//Verifica se deu volta
+		return;
+	}
+	
+	public void hit() {//Pede mais uma Carta
+		dealCarta();
+		return;
+	}
+	
+	
+	private void checkBlackjack() {//Checa se ocorreu um Blackjack
+		boolean flagDealer = false;
+		boolean flagJogador = false;
+		List<Jogador> vencedores = new ArrayList<Jogador>();
+		
+		if (dealer.caclMesa() == 21) {
+			flagDealer = true;
+		}
+		
+		for (Jogador jogador : jogadores) {
+			if (jogador.caclHand() == 21) {
+				flagJogador = true;
+				vencedores.add(jogador);
+			}
+		}
+		
+		
+		if (flagDealer && flagJogador) {
+			//Empate função
+		}else if(flagDealer) {
+				//Dealer vence função
+		}else if (flagJogador) {
+				//Jogador vence função
+			}
+		
+		
+		return;
+		
+	}
 }
