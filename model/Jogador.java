@@ -5,8 +5,8 @@ class Jogador {
 		String nome;
 		private List<Carta> hand = new ArrayList<Carta>();//Carta que o jogador tem é mão
 		private List<Ficha> fichas = new ArrayList<Ficha>();//Fichas que o jogador tem
-		
-		
+		private List<Ficha> aposta = new ArrayList<Ficha>();//Fichas que o jogador apostou
+
 		public Jogador(String n) {
 			nome = n;
 			startFicha();
@@ -79,6 +79,26 @@ class Jogador {
 			}
 
 			return total;
+		}
+
+		boolean apostar(int valor) {
+			Ficha ficha = new Ficha(valor);
+
+			if (!fichas.contains(ficha)) {
+				return false;
+			}
+
+			fichas.remove(ficha);
+			aposta.add(ficha);
+
+			return true;
+		}
+
+		boolean podeDobrarAposta() {
+			int somaFichas = fichas.stream().mapToInt(Ficha::pegarValor).sum();
+			int somaAposta = fichas.stream().mapToInt(Ficha::pegarValor).sum();
+
+			return somaFichas >= somaAposta;
 		}
 
 }
