@@ -58,6 +58,27 @@ class Dealer {
 			}
 			
 		}
-		return resultado;	
+		return resultado;
 	}
+
+	public int caclMesa2() {//Calcula o melhor valor da mão considerando o valor do Às
+		int resultado = 0, ases = 0;
+
+		for (Carta carta : mesa) {
+			resultado += carta.pegaValor();
+
+			if (carta.pegaValor() == 1) {
+				ases++;
+			}
+		}
+
+		for (int i = 0; i < ases; i++) {
+			if (resultado + 10 <= 21) {
+				resultado += 10;
+			}
+		}
+
+		return resultado;
+	}
+
 }
