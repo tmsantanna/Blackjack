@@ -6,12 +6,15 @@ import org.junit.jupiter.api.Test;
 
 class TestMestre {
 
+	/**
+	 * Testa se o baralho foi criado corretamente
+	 */
 	@Test
 	void testCreateBaralho() {
 		Mestre mestre = new Mestre("1811526", false);//Shuffle off
 		
 		//Cria baralho por si proprio
-		
+
 		assertEquals(13,mestre.pegaBaralho().get(12).pegaNum());
 		assertEquals(13,mestre.pegaBaralho().get(25).pegaNum());
 		assertEquals(13,mestre.pegaBaralho().get(38).pegaNum());
@@ -19,22 +22,23 @@ class TestMestre {
 		assertEquals(1,mestre.pegaBaralho().get(52).pegaNum());
 		assertEquals(13,mestre.pegaBaralho().get(207).pegaNum());
 	}
+
+	/**
+	 * Testa se o shuffle executou corretamente
+	 */
 	@Test
 	void testShuffleBaralho() {
 		Mestre m1 = new Mestre("1811526", false);//Shuffle off
 		Mestre m2 = new Mestre("1811526");//Shuffle Default:On
-		
-		
-		assertNotSame(m1.pegaBaralho().get(15),m2.pegaBaralho().get(15));
-		assertNotSame(m1.pegaBaralho().get(16),m2.pegaBaralho().get(16));
-		assertNotSame(m1.pegaBaralho().get(17),m2.pegaBaralho().get(17));
-		assertNotSame(m1.pegaBaralho().get(18),m2.pegaBaralho().get(18));
-		assertNotSame(m1.pegaBaralho().get(19),m2.pegaBaralho().get(19));
+
+		assertNotEquals(m1.pegaBaralho(), m2.pegaBaralho());
 	}
 
-	
+	/**
+	 * Testa se um jogador é adicionado à partida corretamente
+	 */
 	@Test
-	void testAddJogador_removeJogador() {
+	void testAddJogador() {
 		Mestre m1 = new Mestre("1811526");
 		
 		assertEquals(1,m1.pegaJogadores().size());
@@ -42,20 +46,37 @@ class TestMestre {
 		m1.addJogador("1910446");
 		
 		assertEquals(2,m1.pegaJogadores().size());
-		
-		m1.removeJogador();
-		
-		assertEquals(1,m1.pegaJogadores().size());
 	}
-	
+
+	/**
+	 * Testa se um jogador é removida da partida corretamente
+	 */
+	@Test
+	void testRemoveJogador() {
+		Mestre m1 = new Mestre("1811526");
+
+		assertEquals(1,m1.pegaJogadores().size());
+
+		m1.removeJogador();
+
+		assertEquals(0,m1.pegaJogadores().size());
+	}
+
+	/**
+	 * Testa se o jogador recebe uma carta corretamente
+	 */
 	@Test
 	void testDealCarta() {
 		Mestre m1 = new Mestre("1811526");
 		m1.dealCarta();
 		
-		assertTrue(m1.pegaJogadores().get(0).pegaHand().isEmpty());
+		assertFalse(m1.pegaJogadores().get(0).pegaHand().isEmpty());
 	}
-	
+
+	/**
+	 * Testa se o dealer recebe uma carta corretamente
+	 */
+	@Test
 	void testDealMesaCarta() {
 		Mestre m1 = new Mestre("1811526");
 		
@@ -66,10 +87,12 @@ class TestMestre {
 		
 		assertFalse(m1.pegaDealer().pegaMesa().get(1).pegaVisibilidade());
 	}
-	
-	
+
+	/**
+	 * Testa se os jogadores recebem duas cartas no deal inicial
+	 */
 	@Test
-	void testDealStart_testClear() {
+	void testDealStart() {
 		Mestre m1 = new Mestre("1811526");
 		
 		m1.addJogador("1910446");
@@ -78,14 +101,28 @@ class TestMestre {
 		assertEquals(2,m1.pegaJogadores().get(0).pegaHand().size());
 		assertEquals(2,m1.pegaJogadores().get(1).pegaHand().size());
 		assertEquals(2,m1.pegaDealer().pegaMesa().size());
-		
+	}
+
+	/**
+	 * Testa se as cartas são removidas dos jogadores corretamente
+	 */
+	@Test
+	void testClear() {
+		Mestre m1 = new Mestre("1811526");
+
+		m1.addJogador("1910446");
+
+		m1.dealStart();
 		m1.clearCartas();
+
 		assertTrue(m1.pegaJogadores().get(0).pegaHand().isEmpty());
 		assertTrue(m1.pegaJogadores().get(1).pegaHand().isEmpty());
 		assertTrue(m1.pegaDealer().pegaMesa().isEmpty());
 	}
-	
-	
+
+	/**
+	 * Testa se a vez é passada para o próximo jogador ao dar stand
+	 */
 	@Test
 	void testStand() {
 		Mestre m1 = new Mestre("1811526");

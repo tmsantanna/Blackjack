@@ -9,13 +9,19 @@ import org.junit.jupiter.api.Test;
 
 class TestJogador {
 
+	/**
+	 * Testa se o jogador começa com 32 fichas
+	 */
 	@Test
 	void testStartFicha() {
 		Jogador j1 = new Jogador("1811526");//Start fichas dentro
 		
-		assertEquals(27,j1.pegaFichas().size());
+		assertEquals(32,j1.pegaFichas().size());
 	}
-	
+
+	/**
+	 * Testa se o jogador recebe uma carta corretamente
+	 */
 	@Test
 	void testDealCarta() {
 		Jogador j1 = new Jogador("1811526");
@@ -26,9 +32,12 @@ class TestJogador {
 		
 		j1.dealCarta(c1);
 		
-		assertTrue(j1.pegaHand().isEmpty());
+		assertFalse(j1.pegaHand().isEmpty());
 	}
-	
+
+	/**
+	 * Testa se as cartas são reomvidas após o final de uma rodada
+	 */
 	@Test
 	void testClearHand(){
 		Jogador j1 = new Jogador("1811526");
@@ -44,7 +53,10 @@ class TestJogador {
 		
 		assertTrue(j1.pegaHand().isEmpty());
 	}
-	
+
+	/**
+	 * Testa se a soma das cartas na mão é correta
+	 */
 	@Test
 	void testCaclHand() {
 		Jogador j1 = new Jogador("1811526");
@@ -99,7 +111,10 @@ class TestJogador {
 		
 		assertEquals(16,j1.caclHand());
 	}
-	
+
+	/**
+	 * Testa se a soma das fichas é correta
+	 */
 	@Test
 	void testCaclFichas() {
 		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas

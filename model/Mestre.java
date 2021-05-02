@@ -6,7 +6,6 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	private List<Jogador> jogadores = new ArrayList<Jogador>();
 	private Dealer dealer = new Dealer();
 	private int vez = 0;
-	private int numJogadores = 0;
 	
 
 	public Mestre(String nome) {//Vers�o com um nome
@@ -40,7 +39,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 				baralho.add(novaCarta);//Coloca a nova carta no baralho
 				
 				num++;//Aumenta a carta
-				if (num == 13) //Se completou o naipe, passa par o proximo
+				if (num == 14) //Se completou o naipe, passa par o proximo
 				{
 					num = 1;//Reinicia o valor das Cartas
 					naipe++;
@@ -57,7 +56,6 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 
 	public void addJogador(String nome) {//Adiciona jogador
 		jogadores.add(new Jogador(nome));
-		numJogadores++;//Adiciona o numero de jogadores
 		return;
 	}
 	
@@ -68,10 +66,8 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	}
 	
 	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
-		int i;
-		
-		for(i = 0; i < numJogadores;i++) {//Para cada jogador
-			jogadores.get(i).clearHand();//Clear na m�o
+		for(Jogador jogador : jogadores) {//Para cada jogador
+			jogador.clearHand();//Clear na m�o
 		}
 		dealer.clearMesa();//Clear na mesa
 	}
@@ -110,7 +106,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	
 	public void stand() {//Stand, confirma a mão atual e passa a vez
 		vez++;//Passa a vez
-		if (vez+1 == numJogadores) {//Verifica se deu volta
+		if (vez == jogadores.size()) {//Verifica se deu volta
 			//Turno do dealer
 			vez = 0;
 		}
@@ -122,7 +118,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		
 		if (jogadores.get(vez).caclHand() < 21) {//Se o Jogador quebrou
 			vez++;//Passa a vez
-			if (vez+1 == numJogadores) {//Verifica se deu volta
+			if (vez+1 == jogadores.size()) {//Verifica se deu volta
 				//Turno do dealer
 				vez = 0;
 			}
@@ -191,6 +187,6 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	}
 	
 	public int pegaNumJogadores() {
-		return numJogadores;
+		return jogadores.size();
 	}
 }

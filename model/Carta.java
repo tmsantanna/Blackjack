@@ -46,6 +46,16 @@ class Carta {
 			visible = true;
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Carta)) return false;
+
+		Carta c = (Carta) o;
+
+		return naipe == c.naipe && num == c.num;
+	}
+
 }
 
 

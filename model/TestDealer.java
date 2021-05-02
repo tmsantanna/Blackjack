@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 class TestDealer {
 
+	/**
+	 * Testa se o dealer recebe as cartas corretamente, viradas para cima ou para baixo
+	 */
 	@Test
 	void testDealCarta() {
 		Dealer dealer = new Dealer();
@@ -16,20 +19,23 @@ class TestDealer {
 		
 		assertEquals(1,dealer.pegaMesa().size());
 		
-		assertEquals(1,dealer.pegaMesa().get(1).pegaNum());//Checa se o numero é o mesmo
+		assertEquals(1,dealer.pegaMesa().get(0).pegaNum());//Checa se o numero é o mesmo
 		
-		assertTrue(dealer.pegaMesa().get(2).pegaVisibilidade());
+		assertTrue(dealer.pegaMesa().get(0).pegaVisibilidade());
 		
 		
 		dealer.dealCarta(carta2, false);
 	
 		assertEquals(2,dealer.pegaMesa().size());
 		
-		assertEquals(13,dealer.pegaMesa().get(2).pegaNum());//Checa se o numero é o mesmo
+		assertEquals(13,dealer.pegaMesa().get(1).pegaNum());//Checa se o numero é o mesmo
 		
-		assertFalse(dealer.pegaMesa().get(2).pegaVisibilidade());
+		assertFalse(dealer.pegaMesa().get(1).pegaVisibilidade());
 	}
-	
+
+	/**
+	 * Testa se as cartas são reomvidas após o final de uma rodada
+	 */
 	@Test
 	void testClearMesa() {
 		Dealer dealer = new Dealer();
@@ -45,7 +51,10 @@ class TestDealer {
 		
 		assertTrue(dealer.pegaMesa().isEmpty());
 	}
-	
+
+	/**
+	 * Testa se a soma das cartas é correta
+	 */
 	@Test
 	void testCaclMesa() {
 		Dealer dealer = new Dealer();

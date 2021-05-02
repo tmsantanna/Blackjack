@@ -18,11 +18,12 @@ class Ficha {
 	public List<Ficha> converte(int valor) {
 		List<Ficha> fichas = new ArrayList<>();
 
-		for (int i = 0; i < valor / this.valor; i++) {
+		for (int i = 0; i < this.valor / valor; i++) {
 			fichas.add(new Ficha(valor));
 		}
 
-		int resto = valor % this.valor;
+		int resto = this.valor % valor;
+
 		for (int i = 0; i < resto; i++) {
 			fichas.add(new Ficha(1));
 		}
