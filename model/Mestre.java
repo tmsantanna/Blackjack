@@ -5,13 +5,23 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	private List<Carta> baralho = new ArrayList<Carta>();//Cartas no baralho 
 	private List<Jogador> jogadores = new ArrayList<Jogador>();
 	private Dealer dealer = new Dealer();
-	int vez = 0;
-	int numJogadores;
+	private int vez = 0;
+	private int numJogadores = 0;
 	
 
 	public Mestre(String nome) {//Vers�o com um nome
 		jogadores.add(new Jogador(nome));
+		createBaralho();//Cria o baralho
 		shuffleBaralho();
+		return;
+	}
+	
+	public Mestre(String nome, boolean shuffle) {//Vers�o com um nome e opção para shuffle
+		jogadores.add(new Jogador(nome));
+		createBaralho();//Cria o baralho
+		if (shuffle) {
+			shuffleBaralho();
+		}
 		return;
 	}
 	
@@ -25,12 +35,12 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 			//Inicia os contadores de baralho
 			num = 1;
 			naipe = 1;
-			for(j=0;j<54;j++) {
+			for(j=0;j<52;j++) {
 				Carta novaCarta = new Carta(num,naipe);//Cria uma nova Carta
 				baralho.add(novaCarta);//Coloca a nova carta no baralho
 				
 				num++;//Aumenta a carta
-				if (num == 14) //Se completou o naipe, passa par o proximo
+				if (num == 13) //Se completou o naipe, passa par o proximo
 				{
 					num = 1;//Reinicia o valor das Cartas
 					naipe++;
@@ -42,20 +52,22 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 
 	
 	private void shuffleBaralho() {//Embaralha o baralho
-		createBaralho();//Cria o baralho
 		Collections.shuffle(baralho);
 	}
 
-	private void addJogador(String nome) {//Adiciona jogador
+	public void addJogador(String nome) {//Adiciona jogador
 		jogadores.add(new Jogador(nome));
+		numJogadores++;//Adiciona o numero de jogadores
 		return;
 	}
 	
-	private int calculaNumJog() {//Calcula o numero de jogadores
-		return numJogadores = jogadores.size();
+	public Jogador removeJogador() {//Remove um jogador da lista
+		Jogador jogador = jogadores.get(vez);
+		jogador.clearHand();
+		return jogadores.remove(vez);
 	}
 	
-	private void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
+	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
 		int i;
 		
 		for(i = 0; i < numJogadores;i++) {//Para cada jogador
@@ -65,7 +77,9 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	}
 	
 	
-	
+	public List<Carta> pegaBaralho(){
+		return baralho;
+	}
 	
 	public void dealStart() {//Cartas no inicio da rodada
 		for (Jogador jogador : jogadores) {
@@ -96,22 +110,29 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	
 	public void stand() {//Stand, confirma a mão atual e passa a vez
 		vez++;//Passa a vez
-		vez = vez%4;//Verifica se deu volta
+		if (vez+1 == numJogadores) {//Verifica se deu volta
+			//Turno do dealer
+			vez = 0;
+		}
 		return;
 	}
 	
 	public void hit() {//Pede mais uma Carta
 		dealCarta();
 		
-		if (jogadores.get(vez).caclHand() > 21) {//Se o Jogador quebrou
+		if (jogadores.get(vez).caclHand() < 21) {//Se o Jogador quebrou
 			vez++;//Passa a vez
-			vez = vez%4;//Verifica se deu volta
+			if (vez+1 == numJogadores) {//Verifica se deu volta
+				//Turno do dealer
+				vez = 0;
+			}
 		}
 		return;
 	}
 	
 	private void dealerTurn() {
 		int valor;
+		checkBlackjack();
 		
 		valor = dealer.caclMesa();
 		
@@ -125,7 +146,8 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}
 		return;
 	}
-	private void checkBlackjack() {//Checa se ocorreu um Blackjack
+	
+	public void checkBlackjack() {//Checa se ocorreu um Blackjack
 		boolean flagDealer = false;
 		boolean flagJogador = false;
 		List<Jogador> vencedores = new ArrayList<Jogador>();
@@ -150,5 +172,25 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 				//Jogador vence função
 			}
 		return;
+	}
+	
+	public void checkFinal() {//Check final, depois do dealer pegar todas a pecas qure precisava
+		//Check Final
+	}
+	
+	public List<Jogador>pegaJogadores(){//Pega os jogadores
+		return jogadores;
+	}
+	
+	public Dealer pegaDealer() {//Pega o Dealer
+		return dealer;
+	}
+	
+	public int pegaVez() {
+		return vez;
+	}
+	
+	public int pegaNumJogadores() {
+		return numJogadores;
 	}
 }
