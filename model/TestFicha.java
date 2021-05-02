@@ -13,7 +13,7 @@ class TestFicha {
 	 * Testa a conversão de fichas de valores maiores para valores menores
 	 */
 	@Test
-	void testConveret() {
+	void testConverte() {
 		List<Ficha> f1 = new ArrayList<Ficha>();
 		Ficha f = new Ficha(100);
 		f1 = f.converte(20);
