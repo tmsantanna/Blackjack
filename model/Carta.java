@@ -14,7 +14,7 @@ class Carta {
 		return;
 	}
 	
-	private void calculaValor(int n) {
+	public void calculaValor(int n) {
 		if (n>9) {
 			valor = 10;
 		}
@@ -32,6 +32,10 @@ class Carta {
 	}
 	public int pegaNaipe() { //Pega o numero da carta
 		return naipe;
+	}
+	public boolean pegaVisibilidade() {//Pega para ver se a carta é visivel ou não
+		return visible;
+		
 	}
 	
 	public void flip() {//Vira a carta
