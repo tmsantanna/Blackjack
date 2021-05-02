@@ -21,9 +21,12 @@ class Dealer {
 		mesa.clear();//Clear
 		return;
 	}
+	
+	public List<Carta> pegaMesa(){
+		return mesa;
+	}
 
-
-	public int caclMesa() {//Calcula o melhor valor da mão considerando o valor do Às
+	public int caclMesa() {//Calcula o melhor valor da mesa considerando o valor do Às
 		int resultado = 0, ases = 0;
 
 		for (Carta carta : mesa) {
