@@ -75,7 +75,7 @@ class Jogador {
 			int total = 0;
 
 			for (Ficha ficha : fichas) {
-				total += ficha.pegaValor();
+				total += ficha.pegarValor();
 			}
 
 			return total;
@@ -94,22 +94,23 @@ class Jogador {
 			return true;
 		}
 
-		boolean podeDobrarAposta() {
-			int somaFichas = fichas.stream().mapToInt(Ficha::pegaValor).sum();
-			int somaAposta = fichas.stream().mapToInt(Ficha::pegaValor).sum();
+		//boolean podeDobrarAposta() {
+			//int somaFichas = fichas.stream().mapToInt(Ficha::pegaValor).sum();
+			//int somaAposta = fichas.stream().mapToInt(Ficha::pegaValor).sum();
 
-			return somaFichas >= somaAposta;
-		}		
+		//	return somaFichas >= somaAposta;
+		//}		
 
-
-		private List<Ficha> converte(Ficha ficha,int valor) {
-			int i;
-			List<Ficha> conversao = new ArrayList<Ficha>();
-			for (i=0; i < ficha.pegaValor()/valor;i++) {//Cria um numero de fichas depenendo do valor original e o valor novo
-				conversao.add(new Ficha(valor));//Adiciona nova ficha
-			}
-			
-			return conversao;
+		
+		public List<Carta> pegaHand(){
+			return hand;
+		}
+		
+		public String pegaNome() {
+			return nome;
 		}
 
+		public List<Ficha> pegaFichas(){
+			return fichas;
+		}
 }
