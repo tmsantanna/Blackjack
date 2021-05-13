@@ -12,8 +12,8 @@ class TestDealer {
 	@Test
 	void testDealCarta() {
 		Dealer dealer = new Dealer();
-		Carta carta = new Carta(1,1);
-		Carta carta2 = new Carta(13,1);
+		Carta carta = new Carta(1,1,0);
+		Carta carta2 = new Carta(13,1,0);
 		
 		dealer.dealCarta(carta, true);
 		
@@ -39,8 +39,8 @@ class TestDealer {
 	@Test
 	void testClearMesa() {
 		Dealer dealer = new Dealer();
-		Carta c1 = new Carta(1,1);
-		Carta c2 = new Carta(1,1);
+		Carta c1 = new Carta(1,1,1);
+		Carta c2 = new Carta(1,1,1);
 		
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
@@ -58,8 +58,8 @@ class TestDealer {
 	@Test
 	void testCaclMesa() {
 		Dealer dealer = new Dealer();
-		Carta c1 = new Carta(1,1);
-		Carta c2 = new Carta(13,1);
+		Carta c1 = new Carta(1,1,0);
+		Carta c2 = new Carta(13,1,0);
 		Carta c3;
 		Carta c4;
 		
@@ -70,8 +70,8 @@ class TestDealer {
 		assertEquals(21,dealer.caclMesa());
 		dealer.clearMesa();
 		
-		c1 = new Carta(1,1);
-		c2 = new Carta(1,1);
+		c1 = new Carta(1,1,0);
+		c2 = new Carta(1,1,0);
 		
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
@@ -82,9 +82,9 @@ class TestDealer {
 		
 		dealer.clearMesa();
 		
-		c1 = new Carta(13,1);
-		c2 = new Carta(13,1);
-		c3 = new Carta(1,1);
+		c1 = new Carta(13,1,1);
+		c2 = new Carta(13,1,0);
+		c3 = new Carta(1,1,0);
 		
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
@@ -95,10 +95,10 @@ class TestDealer {
 		
 		dealer.clearMesa();
 		
-		c1 = new Carta(5,1);
-		c2 = new Carta(5,1);
-		c3 = new Carta(5,1);
-		c4 = new Carta(1,1);
+		c1 = new Carta(5,1,0);
+		c2 = new Carta(5,1,1);
+		c3 = new Carta(5,1,0);
+		c4 = new Carta(1,1,1);
 		
 		
 		dealer.dealCarta(c1, true);
