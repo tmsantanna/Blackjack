@@ -25,7 +25,7 @@ class TestJogador {
 	@Test
 	void testDealCarta() {
 		Jogador j1 = new Jogador("1811526");
-		Carta c1 = new Carta(1,1);
+		Carta c1 = new Carta(1,1,0);
 		
 		
 		assertTrue(j1.pegaHand().isEmpty());
@@ -41,8 +41,8 @@ class TestJogador {
 	@Test
 	void testClearHand(){
 		Jogador j1 = new Jogador("1811526");
-		Carta c1 = new Carta(1,1);
-		Carta c2 = new Carta(2,1);
+		Carta c1 = new Carta(1,1,0);
+		Carta c2 = new Carta(2,1,0);
 		
 		j1.dealCarta(c1);
 		j1.dealCarta(c2);
@@ -60,8 +60,8 @@ class TestJogador {
 	@Test
 	void testCaclHand() {
 		Jogador j1 = new Jogador("1811526");
-		Carta c1 = new Carta(1,1);
-		Carta c2 = new Carta(13,1);
+		Carta c1 = new Carta(1,1,0);
+		Carta c2 = new Carta(13,1,0);
 		Carta c3;
 		Carta c4;
 		
@@ -72,8 +72,8 @@ class TestJogador {
 		assertEquals(21,j1.caclHand());
 		j1.clearHand();
 		
-		c1 = new Carta(1,1);
-		c2 = new Carta(1,1);
+		c1 = new Carta(1,1,1);
+		c2 = new Carta(1,1,1);
 		
 		j1.dealCarta(c1);
 		j1.dealCarta(c2);
@@ -84,9 +84,9 @@ class TestJogador {
 		
 		j1.clearHand();
 		
-		c1 = new Carta(13,1);
-		c2 = new Carta(13,1);
-		c3 = new Carta(1,1);
+		c1 = new Carta(13,1,0);
+		c2 = new Carta(13,1,0);
+		c3 = new Carta(1,1,0);
 		
 		j1.dealCarta(c1);
 		j1.dealCarta(c2);
@@ -97,10 +97,10 @@ class TestJogador {
 		
 		j1.clearHand();
 		
-		c1 = new Carta(5,1);
-		c2 = new Carta(5,1);
-		c3 = new Carta(5,1);
-		c4 = new Carta(1,1);
+		c1 = new Carta(5,1,0);
+		c2 = new Carta(5,1,0);
+		c3 = new Carta(5,1,0);
+		c4 = new Carta(1,1,0);
 		
 		
 		j1.dealCarta(c1);
