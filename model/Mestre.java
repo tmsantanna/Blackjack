@@ -35,7 +35,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 			num = 1;
 			naipe = 1;
 			for(j=0;j<52;j++) {
-				Carta novaCarta = new Carta(num,naipe);//Cria uma nova Carta
+				Carta novaCarta = new Carta(num,naipe,i%2);//Cria uma nova Carta
 				baralho.add(novaCarta);//Coloca a nova carta no baralho
 				
 				num++;//Aumenta a carta
