@@ -5,11 +5,13 @@ class Carta {
 	private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
 	private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
 	private boolean visible;//Se a carta está sendo vista ou não
+	private int deck;//0 preto e 1 vermelho
 	
-	public Carta(int n, int na) {
+	public Carta(int n, int na, int d) {
 		num = n;
 		naipe = na;
 		visible = true;
+		deck = d;
 		calculaValor(n);
 		return;
 	}
@@ -46,6 +48,10 @@ class Carta {
 			visible = true;
 		}
 	}
+	
+	public int pegaDeck() {
+		return deck;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -57,5 +63,4 @@ class Carta {
 	}
 
 }
-
 
