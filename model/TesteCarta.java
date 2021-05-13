@@ -12,18 +12,18 @@ class TestCarta {
 	 */
 	@Test 
 	void testCarta() {
-		Carta e = new Carta(1,1);
+		Carta e = new Carta(1,1,0);
 		
 		assertEquals(1,e.pegaNaipe());
 		assertEquals(1,e.pegaNum());
 		
-		e = new Carta(10,2);
+		e = new Carta(10,2,0);
 		
 		assertEquals(2,e.pegaNaipe());
 		assertEquals(10,e.pegaNum());
 		
 		
-		e = new Carta(13,4);
+		e = new Carta(13,4,0);
 		
 		assertEquals(4,e.pegaNaipe());
 		assertEquals(13,e.pegaNum());
@@ -34,9 +34,9 @@ class TestCarta {
 	 */
 	@Test
 	void testCalculaValor() {
-		Carta e = new Carta(1,1);
+		Carta e = new Carta(1,1,0);
 		assertEquals(1,e.pegaValor());//Teste se gera corretamente o numero
-		e =  new Carta(13,1);
+		e =  new Carta(13,1,0);
 		assertEquals(10,e.pegaValor());
 	}
 
@@ -45,7 +45,7 @@ class TestCarta {
 	 */
 	@Test
 	void testFlip() {
-		Carta e = new Carta(1,1);
+		Carta e = new Carta(1,1,0);
 		
 		assertTrue(e.pegaVisibilidade());
 		e.flip();
