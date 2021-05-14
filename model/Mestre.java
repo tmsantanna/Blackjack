@@ -49,7 +49,6 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}
 	}
 
-	
 	private void shuffleBaralho() {//Embaralha o baralho
 		Collections.shuffle(baralho);
 	}
@@ -71,8 +70,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}
 		dealer.clearMesa();//Clear na mesa
 	}
-	
-	
+
 	public List<Carta> pegaBaralho(){
 		return baralho;
 	}
@@ -96,6 +94,7 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 	public void dealCarta(Jogador jog) {//Da carta para um Jogador
 		jog.dealCarta(baralho.remove(0));
 	}
+
 	public void dealMesaCarta() {//Da Carta para a mesa sem Boolean
 		dealer.dealCarta(baralho.remove(0), true);
 	}

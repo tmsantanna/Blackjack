@@ -9,7 +9,8 @@ class DrawString extends Componente {
 	private Color cor;
 	private float font;
 	
-	public DrawString(int x, int y, String txt) {
+	public DrawString(Frame frame, int x, int y, String txt) {
+		super(frame);
 		this.x = x;
 		this.y = y;
 		this.txt = txt;
@@ -17,7 +18,8 @@ class DrawString extends Componente {
 		this.font = 20f;
 	}
 	
-	public DrawString(int x, int y, String txt,Color color) {
+	public DrawString(Frame frame, int x, int y, String txt,Color color) {
+		super(frame);
 		this.x = x;
 		this.y = y;
 		this.txt = txt;
@@ -25,7 +27,8 @@ class DrawString extends Componente {
 		this.font = 20f;
 	}
 	
-	public DrawString(int x, int y, String txt,Color color, float font) {
+	public DrawString(Frame frame, int x, int y, String txt,Color color, float font) {
+		super(frame);
 		this.x = x;
 		this.y = y;
 		this.txt = txt;
