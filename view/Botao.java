@@ -9,46 +9,32 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-class Botao extends Componente {
-
-	private int x, y, largura, altura;
-
-	private Runnable acao;
+class Botao extends JButton {
 
 	private BufferedImage image, imagePressionado, imageInativo;
 
-	private boolean pressionado = false, ativo = true;
+	private boolean pressionado = false;
 
-	private final MouseAdapter mouseAdapter = new MouseAdapter() {
+	public Botao(int x, int y, int largura, int altura, String imagePath) {
+		setBounds(x, y, largura, altura);
+		setOpaque(false);
+		setContentAreaFilled(false);
+		setBorderPainted(false);
+		setFocusPainted(false);
+		addMouseListener(new MouseAdapter() {
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-
-			if (ativo && e.getX() >= x && e.getX() < x + largura && e.getY() >= y && e.getY() < y + altura) {
+			@Override
+			public void mousePressed(MouseEvent e) {
 				pressionado = true;
-				frame.repaint();
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if (!ativo || !pressionado) return;
-
-			if (e.getX() >= x && e.getX() < x + largura && e.getY() >= y && e.getY() < y + altura & acao != null) {
-				acao.run();
+				repaint();
 			}
 
-			pressionado = false;
-			frame.repaint();
-		}
-	};
-
-	public Botao(Frame frame, int x, int y, int largura, int altura, String imagePath) {
-		super(frame);
-		this.x = x;
-		this.y = y;
-		this.largura = largura;
-		this.altura = altura;
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				pressionado = false;
+				repaint();
+			}
+		});
 
 		try {
 			image = ImageIO.read(new File(imagePath));
@@ -58,37 +44,14 @@ class Botao extends Componente {
 		imageInativo = darker(imagePressionado);
 	}
 
-	void setAtivo(boolean b) {
-		ativo = b;
-		frame.repaint();
-	}
-
-	boolean pegaAtivo() {
-		return ativo;
-	}
-
-	void setAcao(Runnable acao) {
-		this.acao = acao;
-	}
-
 	@Override
-	void onAdd() {
-		frame.getContentPane().addMouseListener(mouseAdapter);
-	}
-
-	@Override
-	void onRemove() {
-		frame.getContentPane().removeMouseListener(mouseAdapter);
-	}
-
-	@Override
-	public void paint(Graphics2D g) {
-		if (!ativo) {
-			g.drawImage(imageInativo, x, y, null);
+	public void paint(Graphics g) {
+		if (!isEnabled()) {
+			g.drawImage(imageInativo, 0, 0, null);
 		} else if (pressionado) {
-			g.drawImage(imagePressionado, x, y, null);
+			g.drawImage(imagePressionado, 0, 0, null);
 		} else {
-			g.drawImage(image, x, y, null);
+			g.drawImage(image, 0, 0, null);
 		}
 	}
 

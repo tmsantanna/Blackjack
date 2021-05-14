@@ -35,7 +35,15 @@ class DrawString extends Componente {
 		this.cor = color;
 		this.font = font;
 	}
-	
+
+	public String pegaTexto() {
+		return txt;
+	}
+
+	public void setTexto(String texto) {
+		txt = texto;
+		frame.repaint();
+	}
 	
 	@Override
 	public void paint(Graphics2D g) {

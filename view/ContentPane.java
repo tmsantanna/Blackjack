@@ -30,13 +30,12 @@ class ContentPane extends JPanel {
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		g.clearRect(0, 0, getWidth(), getHeight());
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
 		for (Componente componente : componentes) {
 			componente.paint((Graphics2D) g);
 		}
-
 	}
 
 }
