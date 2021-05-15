@@ -1,13 +1,13 @@
 package model;
 
-class Carta {
+public class Carta {
 	private int valor;//Valor da Carta em blackjack
 	private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
 	private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
 	private boolean visible;//Se a carta está sendo vista ou não
-	private int deck;//0 preto e 1 vermelho
-	
-	public Carta(int n, int na, int d) {
+	private int deck;//0 azul e 1 vermelho
+
+	Carta(int n, int na, int d) {
 		num = n;
 		naipe = na;
 		visible = true;

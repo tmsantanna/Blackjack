@@ -1,18 +1,18 @@
 package model;
 import java.util.*;
 
-class Jogador {
+public class Jogador {
 		String nome;
 		private List<Carta> hand = new ArrayList<Carta>();//Carta que o jogador tem é mão
 		private List<Ficha> fichas = new ArrayList<Ficha>();//Fichas que o jogador tem
 		private List<Ficha> aposta = new ArrayList<Ficha>();//Fichas que o jogador apostou
 
-		public Jogador(String n) {
+		Jogador(String n) {
 			nome = n;
 			startFicha();
 		}
 		
-		private void startFicha () {//Ficha para serem recebidas no inicio do jogo
+		private void startFicha() {//Ficha para serem recebidas no inicio do jogo
 			int i;
 
 			for (i=0;i<2;i++) {//Duas fichas de $100
@@ -41,12 +41,12 @@ class Jogador {
 			return;
 		} 
 		
-		public void dealCarta(Carta novaCarta){//Da uma carta para a mão do jogador
+		void dealCarta(Carta novaCarta){//Da uma carta para a mão do jogador
 			hand.add(novaCarta);
 			return;
 		}
 		
-		public void clearHand() {//Remove todas as cartas da mão
+		void clearHand() {//Remove todas as cartas da mão
 			hand.clear();//Clear
 			return;
 		}

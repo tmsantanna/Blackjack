@@ -1,7 +1,7 @@
 package model;
 import java.util.*;
 
-class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontencendo, jogadores e tudo mais.
+public class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontencendo, jogadores e tudo mais.
 	private List<Carta> baralho = new ArrayList<Carta>();//Cartas no baralho 
 	private List<Jogador> jogadores = new ArrayList<Jogador>();
 	private Dealer dealer = new Dealer();
@@ -23,7 +23,15 @@ class Mestre {// A fun��o dessa classe � manter a no��o do jogo, do qu
 		}
 		return;
 	}
-	
+
+	public Mestre(List<String> nomes) {
+		for (String nome : nomes) {
+			jogadores.add(new Jogador(nome));
+		}
+		createBaralho();
+		shuffleBaralho();
+	}
+
 	private void createBaralho() {//Cria os 4 baralhos
 		int i,j;
 		int num,naipe;

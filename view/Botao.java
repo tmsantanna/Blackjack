@@ -11,48 +11,30 @@ import java.io.IOException;
 
 class Botao extends JButton {
 
-	private BufferedImage image, imagePressionado, imageInativo;
-
-	private boolean pressionado = false;
-
 	public Botao(int x, int y, int largura, int altura, String imagePath) {
 		setBounds(x, y, largura, altura);
 		setOpaque(false);
 		setContentAreaFilled(false);
 		setBorderPainted(false);
 		setFocusPainted(false);
-		addMouseListener(new MouseAdapter() {
+		setFocusTraversalKeysEnabled(false);
+		getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "");
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				pressionado = true;
-				repaint();
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				pressionado = false;
-				repaint();
-			}
-		});
+		BufferedImage bufferImage;
 
 		try {
-			image = ImageIO.read(new File(imagePath));
+			bufferImage = ImageIO.read(new File(imagePath));
 		} catch (IOException e) {
+			System.err.println("Erro ao carregar a imagem: " + imagePath);
+			System.exit(-1);
+			return;
 		}
-		imagePressionado = darker(image);
-		imageInativo = darker(imagePressionado);
-	}
 
-	@Override
-	public void paint(Graphics g) {
-		if (!isEnabled()) {
-			g.drawImage(imageInativo, 0, 0, null);
-		} else if (pressionado) {
-			g.drawImage(imagePressionado, 0, 0, null);
-		} else {
-			g.drawImage(image, 0, 0, null);
-		}
+		setIcon(new ImageIcon(bufferImage));
+		bufferImage = darker(bufferImage);
+
+		setPressedIcon(new ImageIcon(bufferImage));
+		setDisabledIcon(new ImageIcon(darker(bufferImage)));
 	}
 
 	private static BufferedImage darker(BufferedImage img) {

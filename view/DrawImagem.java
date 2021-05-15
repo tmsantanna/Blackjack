@@ -21,7 +21,8 @@ class DrawImagem extends Componente {
 		try {
 			image = ImageIO.read(new File(path));
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Erro ao carregar a imagem: " + path);
+			System.exit(-1);
 		}
 	}
 

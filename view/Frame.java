@@ -5,8 +5,8 @@ import javax.swing.*;
 class Frame extends JFrame {
 
     Frame() {
-        setSize(893, 700);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setSize(GUI.LARGURA, GUI.ALTURA);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setContentPane(new ContentPane());
         setLayout(null);
