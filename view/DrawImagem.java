@@ -9,14 +9,12 @@ import java.io.IOException;
 class DrawImagem extends Componente {
 
 	private int x, y;//Local na tela
-	private String path;//path
 	private BufferedImage image;
 
 	public DrawImagem(Frame frame, int x, int y, String path) {
 		super(frame);
 		this.x = x;
 		this.y = y;
-		this.path = path;
 
 		try {
 			image = ImageIO.read(new File(path));

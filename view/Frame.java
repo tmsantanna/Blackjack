@@ -10,14 +10,11 @@ class Frame extends JFrame {
         setResizable(false);
         setContentPane(new ContentPane());
         setLayout(null);
+        setLocationRelativeTo(null);
     }
 
     boolean add(Componente c) {
         return ((ContentPane) getContentPane()).add(c);
-    }
-
-    boolean remove(Componente c) {
-        return ((ContentPane) getContentPane()).remove(c);
     }
 
 }

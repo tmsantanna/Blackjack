@@ -2,16 +2,13 @@ package view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 class Botao extends JButton {
 
-	public Botao(int x, int y, int largura, int altura, String imagePath) {
+	public Botao(int x, int y, int largura, int altura, String imagePath, Runnable acao) {
 		setBounds(x, y, largura, altura);
 		setOpaque(false);
 		setContentAreaFilled(false);
@@ -32,9 +29,13 @@ class Botao extends JButton {
 
 		setIcon(new ImageIcon(bufferImage));
 		bufferImage = darker(bufferImage);
-
+		setRolloverIcon(new ImageIcon(bufferImage));
+		bufferImage = darker(bufferImage);
 		setPressedIcon(new ImageIcon(bufferImage));
-		setDisabledIcon(new ImageIcon(darker(bufferImage)));
+		bufferImage = darker(bufferImage);
+		setDisabledIcon(new ImageIcon(bufferImage));
+
+		addActionListener(a -> acao.run());
 	}
 
 	private static BufferedImage darker(BufferedImage img) {
