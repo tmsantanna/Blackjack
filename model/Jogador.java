@@ -4,42 +4,12 @@ import java.util.*;
 public class Jogador {
 		String nome;
 		private List<Carta> hand = new ArrayList<Carta>();//Carta que o jogador tem é mão
-		private List<Ficha> fichas = new ArrayList<Ficha>();//Fichas que o jogador tem
-		private List<Ficha> aposta = new ArrayList<Ficha>();//Fichas que o jogador apostou
+		private int fichas = 500;
+		private int aposta = 0;
 
 		Jogador(String n) {
 			nome = n;
-			startFicha();
 		}
-		
-		private void startFicha() {//Ficha para serem recebidas no inicio do jogo
-			int i;
-
-			for (i=0;i<2;i++) {//Duas fichas de $100
-				fichas.add(new Ficha(100));
-			}
-			
-			for (i=0;i<2;i++) { //Duas fichas de $50
-				fichas.add(new Ficha(50));
-			}
-			
-			for (i=0;i<5;i++){//Cinco fichas de $20
-				fichas.add(new Ficha(20));
-			}
-			
-			for (i=0;i<5;i++){//Cinco fichas de $10
-				fichas.add(new Ficha(10));
-			}
-			
-			for (i=0;i<8;i++){//Oito fichas de $5
-				fichas.add(new Ficha(5));
-			}
-			
-			for (i=0;i<10;i++){//Dez fichas de $1
-				fichas.add(new Ficha(1));
-			}
-			return;
-		} 
 		
 		void dealCarta(Carta novaCarta){//Da uma carta para a mão do jogador
 			hand.add(novaCarta);
@@ -71,36 +41,22 @@ public class Jogador {
 			return resultado;
 		}
 
-		public int calcFichas() {
-			int total = 0;
-
-			for (Ficha ficha : fichas) {
-				total += ficha.pegarValor();
-			}
-
-			return total;
-		}
-
 		boolean apostar(int valor) {
-			Ficha ficha = new Ficha(valor);
+			if (valor < 0 || valor > fichas) return false;
 
-			if (!fichas.contains(ficha)) {
-				return false;
-			}
-
-			fichas.remove(ficha);
-			aposta.add(ficha);
+			aposta += valor;
+			fichas -= valor;
 
 			return true;
 		}
 
-		//boolean podeDobrarAposta() {
-			//int somaFichas = fichas.stream().mapToInt(Ficha::pegaValor).sum();
-			//int somaAposta = fichas.stream().mapToInt(Ficha::pegaValor).sum();
+		boolean podeApostar(int valor) {
+			return valor >= 0 && valor <= fichas;
+		}
 
-		//	return somaFichas >= somaAposta;
-		//}		
-
+		boolean podeDobrarAposta() {
+			return fichas >= 2 * aposta;
+		}
 		
 		public List<Carta> pegaHand(){
 			return hand;
@@ -110,7 +66,11 @@ public class Jogador {
 			return nome;
 		}
 
-		public List<Ficha> pegaFichas(){
+		public int pegaFichas(){
 			return fichas;
+		}
+
+		public int pegaAposta(){
+			return aposta;
 		}
 }

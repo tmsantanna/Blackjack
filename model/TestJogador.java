@@ -7,16 +7,6 @@ import static org.junit.Assert.*;
 public class TestJogador {
 
 	/**
-	 * Testa se o jogador começa com 32 fichas
-	 */
-	@Test
-	public void testStartFicha() {
-		Jogador j1 = new Jogador("1811526");//Start fichas dentro
-		
-		assertEquals(32,j1.pegaFichas().size());
-	}
-
-	/**
 	 * Testa se o jogador recebe uma carta corretamente
 	 */
 	@Test
@@ -116,7 +106,30 @@ public class TestJogador {
 	public void testCaclFichas() {
 		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
 		
-		assertEquals(500,j1.calcFichas());
+		assertEquals(500, j1.pegaFichas());
 	}
-	
+
+	/**
+	 * Testa se a aposta é feita corretamente
+	 */
+	@Test
+	public void testAposta() {
+		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
+		j1.apostar(100);
+
+		assertEquals(100, j1.pegaAposta());
+	}
+
+	/**
+	 * Testa se uma aposta inválida não é contabilizada
+	 */
+	@Test
+	public void testApostaInvalida() {
+		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
+		assertFalse(j1.podeApostar(-100));
+		assertFalse(j1.apostar(-100));
+
+		assertEquals(0, j1.pegaAposta());
+	}
+
 }
