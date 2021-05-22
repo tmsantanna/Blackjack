@@ -1,35 +1,35 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-class TestDealer {
+public  class TestDealer {
 
 	/**
 	 * Testa se o dealer recebe as cartas corretamente, viradas para cima ou para baixo
 	 */
 	@Test
-	void testDealCarta() {
+	public void testDealCarta() {
 		Dealer dealer = new Dealer();
 		Carta carta = new Carta(1,1,0);
 		Carta carta2 = new Carta(13,1,0);
-		
+
 		dealer.dealCarta(carta, true);
-		
+
 		assertEquals(1,dealer.pegaMesa().size());
-		
+
 		assertEquals(1,dealer.pegaMesa().get(0).pegaNum());//Checa se o numero é o mesmo
-		
+
 		assertTrue(dealer.pegaMesa().get(0).pegaVisibilidade());
-		
-		
+
+
 		dealer.dealCarta(carta2, false);
-	
+
 		assertEquals(2,dealer.pegaMesa().size());
-		
+
 		assertEquals(13,dealer.pegaMesa().get(1).pegaNum());//Checa se o numero é o mesmo
-		
+
 		assertFalse(dealer.pegaMesa().get(1).pegaVisibilidade());
 	}
 
@@ -37,18 +37,18 @@ class TestDealer {
 	 * Testa se as cartas são reomvidas após o final de uma rodada
 	 */
 	@Test
-	void testClearMesa() {
+	public void testClearMesa() {
 		Dealer dealer = new Dealer();
 		Carta c1 = new Carta(1,1,1);
 		Carta c2 = new Carta(1,1,1);
-		
+
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
-		
+
 		assertEquals(2,dealer.pegaMesa().size());
-		
+
 		dealer.clearMesa();
-		
+
 		assertTrue(dealer.pegaMesa().isEmpty());
 	}
 
@@ -56,59 +56,57 @@ class TestDealer {
 	 * Testa se a soma das cartas é correta
 	 */
 	@Test
-	void testCaclMesa() {
+	public void testCaclMesa() {
 		Dealer dealer = new Dealer();
 		Carta c1 = new Carta(1,1,0);
 		Carta c2 = new Carta(13,1,0);
 		Carta c3;
 		Carta c4;
-		
+
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
-		
-		
+
+
 		assertEquals(21,dealer.caclMesa());
 		dealer.clearMesa();
-		
+
 		c1 = new Carta(1,1,0);
 		c2 = new Carta(1,1,0);
-		
+
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
-		
-		
+
+
 		assertEquals(12,dealer.caclMesa());//Testa dois ases seguidos
-		
-		
+
+
 		dealer.clearMesa();
-		
+
 		c1 = new Carta(13,1,1);
 		c2 = new Carta(13,1,0);
 		c3 = new Carta(1,1,0);
-		
+
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
 		dealer.dealCarta(c3, false);
-		
-		
+
+
 		assertEquals(21,dealer.caclMesa());
-		
+
 		dealer.clearMesa();
-		
+
 		c1 = new Carta(5,1,0);
 		c2 = new Carta(5,1,1);
 		c3 = new Carta(5,1,0);
 		c4 = new Carta(1,1,1);
-		
-		
+
+
 		dealer.dealCarta(c1, true);
 		dealer.dealCarta(c2, false);
 		dealer.dealCarta(c3, false);
 		dealer.dealCarta(c4, false);
-		
-		
+
 		assertEquals(16,dealer.caclMesa());
-		
 	}
 
 }

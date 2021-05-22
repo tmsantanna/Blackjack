@@ -1,19 +1,16 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.Test;
-
-class TestJogador {
+public class TestJogador {
 
 	/**
 	 * Testa se o jogador começa com 32 fichas
 	 */
 	@Test
-	void testStartFicha() {
+	public void testStartFicha() {
 		Jogador j1 = new Jogador("1811526");//Start fichas dentro
 		
 		assertEquals(32,j1.pegaFichas().size());
@@ -23,7 +20,7 @@ class TestJogador {
 	 * Testa se o jogador recebe uma carta corretamente
 	 */
 	@Test
-	void testDealCarta() {
+	public void testDealCarta() {
 		Jogador j1 = new Jogador("1811526");
 		Carta c1 = new Carta(1,1,0);
 		
@@ -39,7 +36,7 @@ class TestJogador {
 	 * Testa se as cartas são reomvidas após o final de uma rodada
 	 */
 	@Test
-	void testClearHand(){
+	public void testClearHand(){
 		Jogador j1 = new Jogador("1811526");
 		Carta c1 = new Carta(1,1,0);
 		Carta c2 = new Carta(2,1,0);
@@ -58,7 +55,7 @@ class TestJogador {
 	 * Testa se a soma das cartas na mão é correta
 	 */
 	@Test
-	void testCaclHand() {
+	public void testCaclHand() {
 		Jogador j1 = new Jogador("1811526");
 		Carta c1 = new Carta(1,1,0);
 		Carta c2 = new Carta(13,1,0);
@@ -116,7 +113,7 @@ class TestJogador {
 	 * Testa se a soma das fichas é correta
 	 */
 	@Test
-	void testCaclFichas() {
+	public void testCaclFichas() {
 		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
 		
 		assertEquals(500,j1.calcFichas());

@@ -1,17 +1,17 @@
 package model;
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import static org.junit.Assert.*;
 
-class TestCarta {
+public class TestCarta {
 
 
 	/**
 	 * Testa o naipe e o número das cartas
 	 */
-	@Test 
-	void testCarta() {
+	@Test
+	public void testCarta() {
 		Carta e = new Carta(1,1,0);
 		
 		assertEquals(1,e.pegaNaipe());
@@ -33,7 +33,7 @@ class TestCarta {
 	 * Testa o valor das cartas
 	 */
 	@Test
-	void testCalculaValor() {
+	public void testCalculaValor() {
 		Carta e = new Carta(1,1,0);
 		assertEquals(1,e.pegaValor());//Teste se gera corretamente o numero
 		e =  new Carta(13,1,0);
@@ -44,7 +44,7 @@ class TestCarta {
 	 * Testa a mudança de visibilidade das cartas
 	 */
 	@Test
-	void testFlip() {
+	public void testFlip() {
 		Carta e = new Carta(1,1,0);
 		
 		assertTrue(e.pegaVisibilidade());

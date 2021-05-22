@@ -1,16 +1,16 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
-class TestMestre {
+public class TestMestre {
 
 	/**
 	 * Testa se o baralho foi criado corretamente
 	 */
 	@Test
-	void testCreateBaralho() {
+	public void testCreateBaralho() {
 		Mestre mestre = new Mestre("1811526", false);//Shuffle off
 		
 		//Cria baralho por si proprio
@@ -27,7 +27,7 @@ class TestMestre {
 	 * Testa se o shuffle executou corretamente
 	 */
 	@Test
-	void testShuffleBaralho() {
+	public void testShuffleBaralho() {
 		Mestre m1 = new Mestre("1811526", false);//Shuffle off
 		Mestre m2 = new Mestre("1811526");//Shuffle Default:On
 
@@ -38,7 +38,7 @@ class TestMestre {
 	 * Testa se um jogador é adicionado à partida corretamente
 	 */
 	@Test
-	void testAddJogador() {
+	public void testAddJogador() {
 		Mestre m1 = new Mestre("1811526");
 		
 		assertEquals(1,m1.pegaJogadores().size());
@@ -52,7 +52,7 @@ class TestMestre {
 	 * Testa se um jogador é removida da partida corretamente
 	 */
 	@Test
-	void testRemoveJogador() {
+	public void testRemoveJogador() {
 		Mestre m1 = new Mestre("1811526");
 
 		assertEquals(1,m1.pegaJogadores().size());
@@ -66,7 +66,7 @@ class TestMestre {
 	 * Testa se o jogador recebe uma carta corretamente
 	 */
 	@Test
-	void testDealCarta() {
+	public void testDealCarta() {
 		Mestre m1 = new Mestre("1811526");
 		m1.dealCarta();
 		
@@ -77,7 +77,7 @@ class TestMestre {
 	 * Testa se o dealer recebe uma carta corretamente
 	 */
 	@Test
-	void testDealMesaCarta() {
+	public void testDealMesaCarta() {
 		Mestre m1 = new Mestre("1811526");
 		
 		m1.dealMesaCarta();
@@ -92,7 +92,7 @@ class TestMestre {
 	 * Testa se os jogadores recebem duas cartas no deal inicial
 	 */
 	@Test
-	void testDealStart() {
+	public void testDealStart() {
 		Mestre m1 = new Mestre("1811526");
 		
 		m1.addJogador("1910446");
@@ -107,7 +107,7 @@ class TestMestre {
 	 * Testa se as cartas são removidas dos jogadores corretamente
 	 */
 	@Test
-	void testClear() {
+	public void testClear() {
 		Mestre m1 = new Mestre("1811526");
 
 		m1.addJogador("1910446");
@@ -124,7 +124,7 @@ class TestMestre {
 	 * Testa se a vez é passada para o próximo jogador ao dar stand
 	 */
 	@Test
-	void testStand() {
+	public void testStand() {
 		Mestre m1 = new Mestre("1811526");
 		
 		m1.addJogador("19010446");
