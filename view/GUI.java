@@ -32,11 +32,12 @@ public class GUI {
 									   Consumer<model.Jogador> onDouble,
 									   Consumer<model.Jogador> onSplit,
 									   Consumer<model.Jogador> onClear,
-									   Consumer<model.Jogador> onDeal) {
+									   Consumer<model.Jogador> onDeal, 
+									   Consumer<model.Jogador> onStand){
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
 			for (model.Jogador jogador : mestre.pegaJogadores()) {
-				jogadores.add(new Jogador(jogador, onDouble, onSplit, onClear, onDeal));
+				jogadores.add(new Jogador(jogador, onDouble, onSplit, onClear, onDeal, onStand));
 			}
 		}
 
