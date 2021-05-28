@@ -113,27 +113,80 @@ public class Mestre {// A fun��o dessa classe � manter a no��o do jogo
 	
 	public void stand() {//Stand, confirma a mão atual e passa a vez
 		vez++;//Passa a vez
-		if (vez == jogadores.size()) {//Verifica se deu volta
-			//Turno do dealer
-			vez = 0;
+		if (vez == pegaNumJogadores()) {
+			dealerTurn();
 		}
 		return;
 	}
 	
 	public void hit() {//Pede mais uma Carta
-		dealCarta();
+		
+		dealCarta();//Da a carta
+		
+		if (jogadores.get(vez).caclHand(jogadores.get(vez).pegaHand()) < 21 && jogadores.get(vez).caclHand(jogadores.get(vez).pegaSplitHand()) < 21) {//Verifica se as duas mão estão cheias
+			vez++;//Passa a vez
+			if (vez == pegaNumJogadores()) {
+				dealerTurn();
+				}
+			}
 		
 		if (jogadores.get(vez).caclHand() < 21) {//Se o Jogador quebrou
-			vez++;//Passa a vez
-			if (vez+1 == jogadores.size()) {//Verifica se deu volta
-				//Turno do dealer
-				vez = 0;
+			if (jogadores.get(vez).pegaSplitHand().size()>0){//Se possui cartas numa mão split, continua, porem, agora tudo itera com a segunda mão				
+				jogadores.get(vez).trocaMao();//Passa para a segunda mão.
+			}else{
+				vez++;//Passa a vez
+				if (vez == pegaNumJogadores()) {
+					dealerTurn();
+				}
 			}
 		}
 		return;
 	}
 	
-	private void dealerTurn() {
+	public boolean doubleAposta() {//Dobrar a aposta
+		if(jogadores.get(vez).podeDobrarAposta()) {//Verifica se pode dobrar aposta
+			jogadores.get(vez).apostar(jogadores.get(vez).pegaAposta());//Dobra a aposta
+			return true;
+		}
+		else {
+			return false;//Não pode apostar
+		}
+		
+	}
+	
+	public void clear() {
+		
+		jogadores.get(vez).receber(jogadores.get(vez).pegaAposta()/2);//Devolve metade das apostas
+		
+		jogadores.get(vez).clearHand();
+		
+		vez++;//Passa a vez
+		if (vez == pegaNumJogadores()) {
+			dealerTurn();
+		}
+		
+		return;
+	}
+	
+	public boolean split() {
+		if(jogadores.get(vez).podeSplit()){
+			
+			jogadores.get(vez).apostar(jogadores.get(vez).pegaAposta());//Pega a aposta atual e aposta novamente para a segunda mão
+			
+			jogadores.get(vez).split();//Faz o split
+			
+			dealCarta(jogadores.get(vez));//Da uma carta para a primeira mão
+			jogadores.get(vez).trocaMao();//Troca para a segunda mão
+			
+			dealCarta(jogadores.get(vez));//Da uma carta para a segunda mão
+			jogadores.get(vez).trocaMao();//Troca de volta para a primeira mão
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public void dealerTurn() {//Depois fazer AI do Dealer
 		int valor;
 		checkBlackjack();
 		
@@ -144,36 +197,38 @@ public class Mestre {// A fun��o dessa classe � manter a no��o do jogo
 			valor = dealer.caclMesa();
 		}
 		
-		if (valor<21) {
-			//Mesa Derrota
+		if (valor>21) {
+			//Mesa derrota
 		}
 		return;
 	}
 	
 	public void checkBlackjack() {//Checa se ocorreu um Blackjack
 		boolean flagDealer = false;
-		boolean flagJogador = false;
 		List<Jogador> vencedores = new ArrayList<Jogador>();
 		
 		if (dealer.caclMesa() == 21) {
-			flagDealer = true;
+			flagDealer = true;//Blackjack
 		}
 		
 		for (Jogador jogador : jogadores) {
-			if (jogador.caclHand() == 21) {
-				flagJogador = true;
+			if (jogador.caclHand() == 21 && jogador.pegaSplitHand().size()>0) {//Se o jogador tem 21 e não tem uma segunda mão...
 				vencedores.add(jogador);
 			}
 		}
 		
-		
-		if (flagDealer && flagJogador) {
-			//Empate função
-		}else if(flagDealer) {
-				//Dealer vence função
-		}else if (flagJogador) {
-				//Jogador vence função
-			}
+		if (flagDealer && vencedores.size()>0) {
+			//Empate
+			return;
+		}
+		if(vencedores.size()>0) {
+			//Jogadores Blackjack
+			return;
+		}
+		if(flagDealer){
+			//Dealer Blackjack
+			return;
+		}
 		return;
 	}
 	
