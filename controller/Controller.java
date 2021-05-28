@@ -27,7 +27,7 @@ public class Controller {
         mestre.dealStart();
 
         GUI.mostraDealer();
-        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal);
+        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal, Controller::onStand);
     }
 
     private static void carregarJogo() {
@@ -45,5 +45,7 @@ public class Controller {
 
     private static void onDeal(Jogador j) {
     }
-
+    private static void onStand(Jogador j) {
+    	
+    }
 }
