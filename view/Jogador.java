@@ -9,7 +9,8 @@ class Jogador extends Frame {
             Consumer<model.Jogador> onDouble,
             Consumer<model.Jogador> onSplit,
             Consumer<model.Jogador> onClear,
-            Consumer<model.Jogador> onDeal) {
+            Consumer<model.Jogador> onDeal,
+            Consumer<model.Jogador> onStand) {
         setTitle(jogador.pegaNome());
 
         new DrawImagem(this, 0, 0, "imagens/blackjackBKG.png");
@@ -37,6 +38,11 @@ class Jogador extends Frame {
 
         getContentPane().add(new Botao(582, 600, 114, 40, "imagens/deal.png", () -> {
             onDeal.accept(jogador);
+            repaint();
+        }));
+        
+        getContentPane().add(new Botao(582, 540, 114, 40, "imagens/stand.png", () -> {
+            onStand.accept(jogador);
             repaint();
         }));
 
