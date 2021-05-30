@@ -25,7 +25,10 @@ public class Controller {
         mestre = new Mestre(nomes);
 
         GUI.mostraDealer();
-        GUI.mostraJogadores(mestre, nomes, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal, Controller::onStand);
+        GUI.mostraJogadores(mestre, nomes,
+                Controller::onDouble, Controller::onSplit,
+                Controller::onClear, Controller::onDeal,
+                Controller::onStand, Controller::apostar);
 
         mestre.dealStart();
     }
@@ -71,9 +74,17 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na primeira mão!");
         }
     }
+
     private static void onStand(int jogador) {
         if (mestre.podeJogar(jogador)) {
             mestre.stand();
         }
     }
+
+    private static void apostar(int jogador, int aposta) {
+        if (mestre.podeApostar(jogador, aposta)) {
+            mestre.apostar(aposta);
+        }
+    }
+
 }

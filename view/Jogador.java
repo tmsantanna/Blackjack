@@ -5,6 +5,7 @@ import model.Observable;
 import model.Observer;
 
 import java.awt.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 class Jogador extends Frame implements Observer {
@@ -22,7 +23,8 @@ class Jogador extends Frame implements Observer {
             Consumer<Integer> onSplit,
             Consumer<Integer> onClear,
             Consumer<Integer> onDeal,
-            Consumer<Integer> onStand) {
+            Consumer<Integer> onStand,
+            BiConsumer<Integer, Integer> apostar) {
         setTitle(nome);
 
         this.jogador = jogador;
@@ -68,6 +70,8 @@ class Jogador extends Frame implements Observer {
         getContentPane().add(standB);
 
         new Mesa(this, mestre, jogador);
+
+        new Fichas(this, jogador, apostar);
 
         mestre.addObserver(this);
     }

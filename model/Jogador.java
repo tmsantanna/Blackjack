@@ -29,6 +29,8 @@ class Jogador {
 			splitHand.clear();//Clear
 			flagSplitAs = false;
 			segunda = false;
+			aposta = 0;
+			fichas = 500;
 			
 			return;
 		}

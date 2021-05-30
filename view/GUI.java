@@ -4,6 +4,7 @@ import model.Mestre;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class GUI {
@@ -34,11 +35,12 @@ public class GUI {
 									   Consumer<Integer> onSplit,
 									   Consumer<Integer> onClear,
 									   Consumer<Integer> onDeal,
-									   Consumer<Integer> onStand){
+									   Consumer<Integer> onStand,
+									   BiConsumer<Integer, Integer> apostar){
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
 			for (int i = 0; i < nomes.size(); i++) {
-				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand));
+				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand, apostar));
 			}
 		}
 
