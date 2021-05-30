@@ -163,6 +163,19 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		}
 	}
 
+	public void surrender() {
+		jogadores.get(vez).receber(jogadores.get(vez).pegaAposta() / 2);//Devolve metade das apostas
+
+		jogadores.get(vez).clearHand();
+
+		vez++;//Passa a vez
+		if (vez == pegaNumJogadores()) {
+			dealerTurn();
+		}
+
+		return;
+	}
+
 	public boolean split() {
 		if(jogadores.get(vez).podeSplit()){
 
