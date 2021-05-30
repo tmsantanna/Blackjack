@@ -1,6 +1,6 @@
 package model;
 
-public class Carta {
+class Carta {
 	private int valor;//Valor da Carta em blackjack
 	private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
 	private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus

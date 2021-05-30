@@ -1,19 +1,22 @@
 package view;
 
-import model.Carta;
+import model.Mestre;
+import model.Observable;
+import model.Observer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
-import java.awt.*;
 import java.util.Map;
 
-class Mesa extends Componente {
+class Mesa extends Componente implements Observer {
 
-    private List<Carta> cartas;
+    private final int jogador;
+    private List<Integer[]> cartas;
 
     private static final int LARGURA_CARTA = 73;
     private static final int ALTURA_CARTA = 97;
@@ -36,9 +39,11 @@ class Mesa extends Componente {
         carregaImagem("deck2");
     }
 
-    Mesa(Frame frame, List<Carta> cartas) {
+    Mesa(Frame frame, Mestre mestre, int jogador) {
         super(frame);
-        this.cartas = cartas;
+        this.jogador = jogador;
+        this.cartas = mestre.pegaCartas(jogador);
+        mestre.addObserver(this);
     }
 
     private static void carregaImagem(String imagem) {
@@ -50,13 +55,13 @@ class Mesa extends Componente {
         }
     }
 
-    private static BufferedImage pegaImagem(Carta c) {
-        if (!c.pegaVisibilidade()) {
-            return imagens.get("deck" + (c.pegaDeck() + 1));
+    private static BufferedImage pegaImagem(Integer[] carta) {
+        if (carta[3] == 0) {
+            return imagens.get("deck" + (carta[2] + 1)); //se a carta nao for visivel, mostra a parte de tras
         }
 
-        char naipe = NAIPES.charAt(c.pegaNaipe() - 1);
-        char numero = NUMEROS.charAt(c.pegaNum() - 1);
+        char naipe = NAIPES.charAt(carta[1] - 1);
+        char numero = NUMEROS.charAt(carta[0] - 1);
 
         return imagens.get(numero + "" + naipe);
     }
@@ -81,5 +86,12 @@ class Mesa extends Componente {
             g.drawImage(pegaImagem(cartas.get(i)), x, y, null);
             x += dx;
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Mestre m = (Mestre) arg;
+        cartas = m.pegaCartas(jogador);
+        frame.repaint();
     }
 }

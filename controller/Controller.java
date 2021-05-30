@@ -1,6 +1,5 @@
 package controller;
 
-import model.Jogador;
 import model.Mestre;
 import view.GUI;
 
@@ -24,28 +23,57 @@ public class Controller {
         GUI.escondeTelaInicial();
 
         mestre = new Mestre(nomes);
-        mestre.dealStart();
 
         GUI.mostraDealer();
-        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal, Controller::onStand);
+        GUI.mostraJogadores(mestre, nomes, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal, Controller::onStand);
+
+        mestre.dealStart();
     }
 
     private static void carregarJogo() {
 
     }
 
-    private static void onDouble(Jogador j) {
+    private static void onDouble(int jogador) {
+        if (mestre.podeJogar(jogador)) {
+            mestre.doubleAposta();
+        }
     }
 
-    private static void onSplit(Jogador j) {
+    private static void onSplit(int jogador) {
+        if (mestre.podeJogar(jogador)) {
+            mestre.split();
+        }
     }
 
-    private static void onClear(Jogador j) {
+    private static void onClear(int jogador) {
+        if (mestre.podeClear(jogador)) {
+            mestre.clear(jogador);
+        }
     }
 
-    private static void onDeal(Jogador j) {
+    private static void onDeal(int jogador) {
+        boolean segundaMao = mestre.pegaSegunda(jogador);
+
+        if (mestre.podeJogar(jogador)) {
+            mestre.hit();
+        }
+
+        String nome = mestre.pegaNome(jogador);
+
+        if (!mestre.podeJogar(jogador)) {
+            if (segundaMao) {
+                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na segunda mão!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21!");
+            }
+        } else if (mestre.pegaSegunda(jogador) && !segundaMao) {
+            JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na primeira mão!");
+        }
     }
-    private static void onStand(Jogador j) {
-    	
+    private static void onStand(int jogador) {
+        if (mestre.podeJogar(jogador)) {
+            mestre.stand();
+        }
     }
 }

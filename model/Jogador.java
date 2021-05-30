@@ -1,7 +1,7 @@
 package model;
 import java.util.*;
 
-public class Jogador {
+class Jogador {
 		String nome;
 		private List<Carta> hand = new ArrayList<Carta>();//Carta que o jogador tem é mão
 		private List<Carta> splitHand = new ArrayList<Carta>();//Carta que o jogador tem é mão
@@ -117,7 +117,7 @@ public class Jogador {
 		}
 
 		boolean podeDobrarAposta() {
-			return fichas >= 2 * aposta;
+			return fichas >= aposta && hand.size() == 2;
 		}
 		
 		boolean podeSplit() {
@@ -133,7 +133,7 @@ public class Jogador {
 				return false;
 			}
 			
-			if(hand.get(0) != hand.get(1)) {//Verifica se as cartas da mao são iguais
+			if(hand.get(0).pegaValor() != hand.get(1).pegaValor()) {//Verifica se as cartas da mao são iguais
 				return false;
 			}
 			
@@ -172,4 +172,9 @@ public class Jogador {
 		public boolean pegaFlagSplitAs() {
 			return flagSplitAs;
 		}
+
+		public boolean temDuasMaos() {
+			return splitHand.size() > 0;
+		}
+
 }

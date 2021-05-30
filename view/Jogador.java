@@ -1,52 +1,99 @@
 package view;
 
+import model.Mestre;
+import model.Observable;
+import model.Observer;
+
 import java.awt.*;
 import java.util.function.Consumer;
 
-class Jogador extends Frame {
+class Jogador extends Frame implements Observer {
 
-    Jogador(model.Jogador jogador,
-            Consumer<model.Jogador> onDouble,
-            Consumer<model.Jogador> onSplit,
-            Consumer<model.Jogador> onClear,
-            Consumer<model.Jogador> onDeal,
-            Consumer<model.Jogador> onStand) {
-        setTitle(jogador.pegaNome());
+    private final Botao doubleB, splitB, clearB, dealB, standB;
+
+    private final int jogador;
+
+    private final DrawString betStr, balanceStr, segundaMao;
+
+    Jogador(Mestre mestre,
+            String nome,
+            int jogador,
+            Consumer<Integer> onDouble,
+            Consumer<Integer> onSplit,
+            Consumer<Integer> onClear,
+            Consumer<Integer> onDeal,
+            Consumer<Integer> onStand) {
+        setTitle(nome);
+
+        this.jogador = jogador;
 
         new DrawImagem(this, 0, 0, "imagens/blackjackBKG.png");
         new DrawImagem(this, 0, 561, "imagens/betBKG.png");
         new DrawImagem(this, 10, 571, "imagens/betBlackBar.png");
         new DrawImagem(this, 10, 621, "imagens/betBlackBar.png");
         new DrawImagem(this, 700, 475, "imagens/fichaMesa.png");
-        new DrawString(this, 30, 594, "Bet 0.0", Color.white);
-        new DrawString(this, 30, 644, "Balance 500.0", Color.white);
+        betStr = new DrawString(this, 30, 594, "Bet 0", Color.white);
+        balanceStr = new DrawString(this, 30, 644, "Balance 500", Color.white);
+        segundaMao = new DrawString(this, 30, 544, "", Color.white);
 
-        getContentPane().add(new Botao(225, 600, 114, 40, "imagens/double.png", () -> {
+        doubleB = new Botao(225, 600, 114, 40, "imagens/double.png", () -> {
             onDouble.accept(jogador);
             repaint();
-        }));
+        });
 
-        getContentPane().add(new Botao(344, 600, 114, 40, "imagens/split.png", () -> {
+        splitB = new Botao(344, 600, 114, 40, "imagens/split.png", () -> {
             onSplit.accept(jogador);
             repaint();
-        }));
+        });
 
-        getContentPane().add(new Botao(463, 600, 114, 40, "imagens/clear.png", () -> {
+        clearB = new Botao(463, 600, 114, 40, "imagens/clear.png", () -> {
             onClear.accept(jogador);
             repaint();
-        }));
+        });
 
-        getContentPane().add(new Botao(582, 600, 114, 40, "imagens/deal.png", () -> {
+        dealB = new Botao(582, 600, 114, 40, "imagens/deal.png", () -> {
             onDeal.accept(jogador);
             repaint();
-        }));
+        });
         
-        getContentPane().add(new Botao(582, 540, 114, 40, "imagens/stand.png", () -> {
+        standB = new Botao(582, 540, 114, 40, "imagens/stand.png", () -> {
             onStand.accept(jogador);
             repaint();
-        }));
+        });
 
-        new Mesa(this, jogador.pegaHand());
+        getContentPane().add(doubleB);
+        getContentPane().add(splitB);
+        getContentPane().add(clearB);
+        getContentPane().add(dealB);
+        getContentPane().add(standB);
+
+        new Mesa(this, mestre, jogador);
+
+        mestre.addObserver(this);
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        Mestre m = (Mestre) arg;
+
+        doubleB.setEnabled(m.podeDobrarAposta(jogador));
+        splitB.setEnabled(m.podeSplit(jogador));
+        clearB.setEnabled(m.podeClear(jogador));
+        dealB.setEnabled(m.podeJogar(jogador));
+        standB.setEnabled(m.podeJogar(jogador));
+
+        int aposta = m.pegaAposta(jogador);
+        betStr.setTexto("Bet " + aposta);
+
+        int fichas = m.pegaFichas(jogador);
+        balanceStr.setTexto("Balance " + fichas);
+
+        if (!m.temDuasMaos(jogador)) {
+            segundaMao.setTexto("");
+        } else {
+            segundaMao.setTexto((m.pegaSegunda(jogador) ? "Segunda" : "Primeira") + " mão");
+        }
+
+        repaint();
+    }
 }

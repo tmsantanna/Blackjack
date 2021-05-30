@@ -29,15 +29,16 @@ public class GUI {
 	}
 
 	public static void mostraJogadores(Mestre mestre,
-									   Consumer<model.Jogador> onDouble,
-									   Consumer<model.Jogador> onSplit,
-									   Consumer<model.Jogador> onClear,
-									   Consumer<model.Jogador> onDeal, 
-									   Consumer<model.Jogador> onStand){
+									   List<String> nomes,
+									   Consumer<Integer> onDouble,
+									   Consumer<Integer> onSplit,
+									   Consumer<Integer> onClear,
+									   Consumer<Integer> onDeal,
+									   Consumer<Integer> onStand){
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
-			for (model.Jogador jogador : mestre.pegaJogadores()) {
-				jogadores.add(new Jogador(jogador, onDouble, onSplit, onClear, onDeal, onStand));
+			for (int i = 0; i < nomes.size(); i++) {
+				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand));
 			}
 		}
 
