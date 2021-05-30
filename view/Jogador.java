@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 class Jogador extends Frame implements Observer {
 
-    private final Botao doubleB, splitB, clearB, dealB, standB;
+    private final Botao doubleB, splitB, clearB, dealB, standB, surrenderB, quitB;
 
     private final int jogador;
 
@@ -24,6 +24,8 @@ class Jogador extends Frame implements Observer {
             Consumer<Integer> onClear,
             Consumer<Integer> onDeal,
             Consumer<Integer> onStand,
+            Consumer<Integer> onSurrender,
+            Consumer<Integer> onQuit,
             BiConsumer<Integer, Integer> apostar) {
         setTitle(nome);
 
@@ -62,12 +64,24 @@ class Jogador extends Frame implements Observer {
             onStand.accept(jogador);
             repaint();
         });
+        
+        surrenderB = new Botao(463, 540, 114, 40, "imagens/surrender.png", () -> {
+            onStand.accept(jogador);
+            repaint();
+        });
+        
+        quitB = new Botao(660, 40, 114, 40, "imagens/quit.png", () -> {
+            onStand.accept(jogador);
+            repaint();
+        });
 
         getContentPane().add(doubleB);
         getContentPane().add(splitB);
         getContentPane().add(clearB);
         getContentPane().add(dealB);
         getContentPane().add(standB);
+        getContentPane().add(surrenderB);
+        getContentPane().add(quitB);
 
         new Mesa(this, mestre, jogador);
 
@@ -85,6 +99,8 @@ class Jogador extends Frame implements Observer {
         clearB.setEnabled(m.podeClear(jogador));
         dealB.setEnabled(m.podeJogar(jogador));
         standB.setEnabled(m.podeJogar(jogador));
+        surrenderB.setEnabled(m.podeSurrender(jogador));
+        quitB.setEnabled(true);//Quit é sempre verdadeiro
 
         int aposta = m.pegaAposta(jogador);
         betStr.setTexto("Bet " + aposta);
