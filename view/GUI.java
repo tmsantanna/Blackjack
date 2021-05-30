@@ -36,11 +36,13 @@ public class GUI {
 									   Consumer<Integer> onClear,
 									   Consumer<Integer> onDeal,
 									   Consumer<Integer> onStand,
+									   Consumer<Integer> onSurrender,
+									   Consumer<Integer> onQuit,
 									   BiConsumer<Integer, Integer> apostar){
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
 			for (int i = 0; i < nomes.size(); i++) {
-				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand, apostar));
+				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand, onSurrender, onQuit, apostar));
 			}
 		}
 
