@@ -55,6 +55,10 @@ public class GUI {
 		}
 	}
 
+	public static void escondeJogador(int jogador) {
+		jogadores.get(jogador).dispose();
+	}
+
 	public static void mostraTelaInicial(Consumer<List<String>> novoJogo, Runnable carregarJogo) {
 		if (telaInicial == null) {
 			telaInicial = new TelaInicial(novoJogo, carregarJogo);
