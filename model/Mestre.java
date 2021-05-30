@@ -295,12 +295,12 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return podeJogar(jogador) && jogadores.get(jogador).podeApostar(valor);
 	}
 	
-	public boolean podeSurrender() {
-		if (jogadores.get(vez).pegaHand().size()>2){
+	public boolean podeSurrender(int jogador) {
+		if (jogadores.get(jogador).pegaHand().size()>2){
 			return false;
 		}
 		
-		if (jogadores.get(vez).temDuasMaos()) {
+		if (jogadores.get(jogador).temDuasMaos()) {
 			return false;
 		}
 		
