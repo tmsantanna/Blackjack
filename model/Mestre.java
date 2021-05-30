@@ -70,6 +70,13 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		jogador.clearHand();
 		return jogadores.remove(vez);
 	}
+	
+	public Jogador removeJogador(int j) {//Remove um jogador da lista
+		Jogador jogador = jogadores.get(j);
+		jogador.clearHand();
+		return jogadores.remove(j);
+	}
+
 
 	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
 		for(Jogador jogador : jogadores) {//Para cada jogador
@@ -153,7 +160,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		else {
 			return false;//Não pode apostar
 		}
-
 	}
 
 	public void clear(int jogador) {
@@ -161,19 +167,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 			jogadores.get(jogador).clearHand();
 			notifyObservers(this);
 		}
-	}
-
-	public void surrender() {
-		jogadores.get(vez).receber(jogadores.get(vez).pegaAposta() / 2);//Devolve metade das apostas
-
-		jogadores.get(vez).clearHand();
-
-		vez++;//Passa a vez
-		if (vez == pegaNumJogadores()) {
-			dealerTurn();
-		}
-
-		return;
 	}
 
 	public boolean split() {
@@ -194,7 +187,27 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 			return false;
 		}
 	}
+	
+	public void surrender() {
+		jogadores.get(vez).receber(jogadores.get(vez).pegaAposta() / 2);//Devolve metade das apostas
 
+		jogadores.get(vez).clearHand();
+
+		vez++;//Passa a vez
+		if (vez == pegaNumJogadores()) {
+			dealerTurn();
+		}
+		notifyObservers(this);
+		return;
+	}
+	
+	public void quit(int jogador){
+		
+		removeJogador(jogador);
+		notifyObservers(this);
+		return;
+	}
+	
 	public void dealerTurn() {//Depois fazer AI do Dealer
 		int valor;
 		checkBlackjack();
@@ -281,7 +294,20 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	public boolean podeApostar(int jogador, int valor) {
 		return podeJogar(jogador) && jogadores.get(jogador).podeApostar(valor);
 	}
-
+	
+	public boolean podeSurrender() {
+		if (jogadores.get(vez).pegaHand().size()>2){
+			return false;
+		}
+		
+		if (jogadores.get(vez).temDuasMaos()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 	public void apostar(int valor) {
 		if (podeApostar(vez, valor)) {
 			jogadores.get(vez).apostar(valor);
