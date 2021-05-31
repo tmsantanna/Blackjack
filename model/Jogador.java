@@ -108,6 +108,15 @@ class Jogador {
 
 			return true;
 		}
+
+		boolean diminuirAposta(int valor) {
+			if (valor < 0 || valor > aposta) return false;
+
+			aposta -= valor;
+			fichas += valor;
+
+			return true;
+		}
 		
 		void receber(int valor) {
 			fichas += valor;
@@ -120,6 +129,10 @@ class Jogador {
 
 		boolean podeApostar(int valor) {
 			return valor >= 0 && valor <= fichas && valor + aposta <= 100;
+		}
+
+		boolean podeDiminuirAposta(int valor) {
+			return valor >= 0 && valor <= aposta;
 		}
 
 		boolean podeDobrarAposta() {

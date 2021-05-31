@@ -8,8 +8,7 @@ import java.io.IOException;
 
 class Botao extends JButton {
 
-	public Botao(int x, int y, int largura, int altura, String imagePath, Runnable acao) {
-		setBounds(x, y, largura, altura);
+	public Botao(int x, int y, String imagePath, Runnable acao) {
 		setOpaque(false);
 		setContentAreaFilled(false);
 		setBorderPainted(false);
@@ -26,6 +25,8 @@ class Botao extends JButton {
 			System.exit(-1);
 			return;
 		}
+
+		setBounds(x, y, bufferImage.getWidth(), bufferImage.getHeight());
 
 		setIcon(new ImageIcon(bufferImage));
 		bufferImage = darker(bufferImage);

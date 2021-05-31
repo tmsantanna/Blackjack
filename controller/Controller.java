@@ -28,8 +28,8 @@ public class Controller {
         GUI.mostraJogadores(mestre, nomes,
                 Controller::onDouble, Controller::onSplit,
                 Controller::onClear, Controller::onDeal,
-                Controller::onStand,Controller::onSurrender, 
-                Controller::onQuit,Controller::apostar);
+                Controller::onStand, Controller::onSurrender,
+                Controller::onQuit, Controller::apostar);
 
         mestre.dealStart();
     }
@@ -81,24 +81,26 @@ public class Controller {
             mestre.stand();
         }
     }
-    
-    private static void onSurrender(int jogador) {
-    	if (mestre.podeSurrender(jogador)) {
-    		mestre.surrender();
-    	}
-    }
-    
-    private static void onQuit(int jogador) {
-    	mestre.quit(jogador);
 
-    	if (mestre.pegaNumJogadores() == 0) {
-    	    System.exit(0);
+    private static void onSurrender(int jogador) {
+        if (mestre.podeSurrender(jogador)) {
+            mestre.surrender();
+        }
+    }
+
+    private static void onQuit(int jogador) {
+        mestre.quit(jogador);
+
+        if (mestre.pegaNumJogadores() == 0) {
+            System.exit(0);
         }
 
     }
 
     private static void apostar(int jogador, int aposta) {
-        if (mestre.podeApostar(jogador, aposta)) {
+        if (mestre.podeDiminuirAposta(jogador, -aposta)) {
+            mestre.diminuirAposta(-aposta);
+        } else if (mestre.podeApostar(jogador, aposta)) {
             mestre.apostar(aposta);
         }
     }

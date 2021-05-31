@@ -43,37 +43,37 @@ class Jogador extends Frame implements Observer {
         balanceStr = new DrawString(this, 30, 644, "Balance 500", Color.white);
         segundaMao = new DrawString(this, 30, 544, "", Color.white);
 
-        doubleB = new Botao(225, 600, 114, 40, "imagens/double.png", () -> {
+        doubleB = new Botao(225, 600, "imagens/double.png", () -> {
             onDouble.accept(this.jogador);
             repaint();
         });
 
-        splitB = new Botao(344, 600, 114, 40, "imagens/split.png", () -> {
+        splitB = new Botao(344, 600, "imagens/split.png", () -> {
             onSplit.accept(this.jogador);
             repaint();
         });
 
-        clearB = new Botao(463, 600, 114, 40, "imagens/clear.png", () -> {
+        clearB = new Botao(463, 600, "imagens/clear.png", () -> {
             onClear.accept(this.jogador);
             repaint();
         });
 
-        dealB = new Botao(582, 600, 114, 40, "imagens/deal.png", () -> {
+        dealB = new Botao(582, 600, "imagens/deal.png", () -> {
             onDeal.accept(this.jogador);
             repaint();
         });
         
-        standB = new Botao(582, 540, 114, 40, "imagens/stand.png", () -> {
+        standB = new Botao(582, 540, "imagens/stand.png", () -> {
             onStand.accept(this.jogador);
             repaint();
         });
         
-        surrenderB = new Botao(463, 540, 114, 40, "imagens/surrender.png", () -> {
+        surrenderB = new Botao(463, 540, "imagens/surrender.png", () -> {
             onSurrender.accept(this.jogador);
             repaint();
         });
         
-        quitB = new Botao(660, 40, 114, 40, "imagens/quit.png", () -> {
+        quitB = new Botao(660, 40, "imagens/quit.png", () -> {
             onQuit.accept(this.jogador);
             repaint();
         });

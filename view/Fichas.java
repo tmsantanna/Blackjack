@@ -19,6 +19,10 @@ class Fichas extends Componente {
     private static final Map<Integer, Point> FICHAS = new HashMap<>();
     private static final Map<Integer, BufferedImage> imagens = new HashMap<>();
 
+    private Botao aumentar, diminuir;
+
+    private boolean aumentarAposta = true;
+
     static {
         carregaImagem(1);
         carregaImagem(5);
@@ -40,21 +44,35 @@ class Fichas extends Componente {
 
         this.apostar = apostar;
 
+        aumentar = new Botao(700, 420, "imagens/aumentarAposta.png", this::toggleAposta);
+        diminuir = new Botao(700, 420, "imagens/diminiurAposta.png", this::toggleAposta);
+        diminuir.setVisible(false);
+
+        frame.getContentPane().add(aumentar);
+        frame.getContentPane().add(diminuir);
+
         frame.getContentPane().addMouseListener(new MouseAdapter() {
 
             private int fichaPressionada;
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if (e.getButton() != MouseEvent.BUTTON1) return;
+
                 fichaPressionada = pegaFicha(e.getX(), e.getY());
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (e.getButton() != MouseEvent.BUTTON1) {
+                    fichaPressionada = -1;
+                    return;
+                }
+
                 int ficha = pegaFicha(e.getX(), e.getY());
 
                 if (ficha == fichaPressionada && ficha > 0) {
-                    apostar.accept(jogador(), ficha);
+                    apostar.accept(jogador(), aumentarAposta ? ficha : -ficha);
                 }
 
                 fichaPressionada = -1;
@@ -73,6 +91,13 @@ class Fichas extends Componente {
             }
 
         });
+    }
+
+    private void toggleAposta() {
+        aumentarAposta = !aumentarAposta;
+
+        aumentar.setVisible(aumentarAposta);
+        diminuir.setVisible(!aumentarAposta);
     }
 
     private static void carregaImagem(int valor) {

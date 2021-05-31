@@ -322,6 +322,10 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	public boolean podeApostar(int jogador, int valor) {
 		return podeJogar(jogador) && jogadores.get(jogador).podeApostar(valor);
 	}
+
+	public boolean podeDiminuirAposta(int jogador, int valor) {
+		return podeJogar(jogador) && jogadores.get(jogador).podeDiminuirAposta(valor);
+	}
 	
 	public boolean podeSurrender(int jogador) {
 		if (jogadores.get(jogador).pegaHand().size()>2){
@@ -338,6 +342,13 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	public void apostar(int valor) {
 		if (podeApostar(vez, valor)) {
 			jogadores.get(vez).apostar(valor);
+			notifyObservers(this);
+		}
+	}
+
+	public void diminuirAposta(int valor) {
+		if (podeDiminuirAposta(vez, valor)) {
+			jogadores.get(vez).diminuirAposta(valor);
 			notifyObservers(this);
 		}
 	}

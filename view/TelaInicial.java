@@ -18,8 +18,8 @@ class TelaInicial extends Frame {
     	getContentPane().add(t2);
     	getContentPane().add(t3);
     	getContentPane().add(t4);
-    	getContentPane().add(new Botao(304, 500, 114, 40, "imagens/novoJogo.png", () -> onNovo.accept(getText())));
-    	getContentPane().add(new Botao(423, 500, 114, 40, "imagens/carregar.png", onLoad));
+    	getContentPane().add(new Botao(304, 500, "imagens/novoJogo.png", () -> onNovo.accept(getText())));
+    	getContentPane().add(new Botao(423, 500, "imagens/carregar.png", onLoad));
     }
 
     private List<String> getText(){
