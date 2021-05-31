@@ -15,7 +15,6 @@ import java.util.Map;
 
 class Mesa extends Componente implements Observer {
 
-    private final int jogador;
     private List<Integer[]> cartas;
 
     private static final int LARGURA_CARTA = 73;
@@ -39,10 +38,10 @@ class Mesa extends Componente implements Observer {
         carregaImagem("deck2");
     }
 
-    Mesa(Frame frame, Mestre mestre, int jogador) {
+    Mesa(Frame frame, Mestre mestre) {
         super(frame);
-        this.jogador = jogador;
-        this.cartas = mestre.pegaCartas(jogador);
+
+        this.cartas = mestre.pegaCartas(jogador());
         mestre.addObserver(this);
     }
 
@@ -88,10 +87,15 @@ class Mesa extends Componente implements Observer {
         }
     }
 
+    private int jogador() {
+        return frame instanceof Jogador ? ((Jogador) frame).jogador : -1;
+    }
+
     @Override
     public void update(Observable o, Object arg) {
-        Mestre m = (Mestre) arg;
-        cartas = m.pegaCartas(jogador);
-        frame.repaint();
+        if (arg instanceof Mestre) {
+            cartas = ((Mestre) arg).pegaCartas(jogador());
+            frame.repaint();
+        }
     }
 }

@@ -114,12 +114,16 @@ class Jogador {
 			return;
 		}
 
+		boolean podeDeal() {
+			return aposta >= 20;
+		}
+
 		boolean podeApostar(int valor) {
-			return valor >= 0 && valor <= fichas;
+			return valor >= 0 && valor <= fichas && valor + aposta <= 100;
 		}
 
 		boolean podeDobrarAposta() {
-			return fichas >= aposta && hand.size() == 2;
+			return podeApostar(aposta) && hand.size() == 2;
 		}
 		
 		boolean podeSplit() {
@@ -127,7 +131,7 @@ class Jogador {
 				return false;
 			}
 			
-			if (hand.size()>2) {//Se a mão é maior que a incial, retorna falsp
+			if (hand.size()!=2) {//Se a mão é maior que a incial, retorna falsp
 				return false;
 			}
 			

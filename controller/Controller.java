@@ -24,7 +24,7 @@ public class Controller {
 
         mestre = new Mestre(nomes);
 
-        GUI.mostraDealer();
+        GUI.mostraDealer(mestre);
         GUI.mostraJogadores(mestre, nomes,
                 Controller::onDouble, Controller::onSplit,
                 Controller::onClear, Controller::onDeal,
@@ -39,13 +39,13 @@ public class Controller {
     }
 
     private static void onDouble(int jogador) {
-        if (mestre.podeJogar(jogador)) {
+        if (mestre.podeDobrarAposta(jogador)) {
             mestre.doubleAposta();
         }
     }
 
     private static void onSplit(int jogador) {
-        if (mestre.podeJogar(jogador)) {
+        if (mestre.podeSplit(jogador)) {
             mestre.split();
         }
     }
@@ -59,7 +59,7 @@ public class Controller {
     private static void onDeal(int jogador) {
         boolean segundaMao = mestre.pegaSegunda(jogador);
 
-        if (mestre.podeJogar(jogador)) {
+        if (mestre.podeDeal(jogador)) {
             mestre.hit();
         }
 
@@ -90,7 +90,11 @@ public class Controller {
     
     private static void onQuit(int jogador) {
     	mestre.quit(jogador);
-    	GUI.escondeJogador(jogador);
+
+    	if (mestre.pegaNumJogadores() == 0) {
+    	    System.exit(0);
+        }
+
     }
 
     private static void apostar(int jogador, int aposta) {

@@ -14,7 +14,6 @@ import java.util.function.BiConsumer;
 class Fichas extends Componente {
 
     private final BiConsumer<Integer, Integer> apostar;
-    private final int jogador;
 
     private static final int TAMANHO_FICHA = 50;
     private static final Map<Integer, Point> FICHAS = new HashMap<>();
@@ -36,10 +35,9 @@ class Fichas extends Componente {
         FICHAS.put(100, new Point(815, 600));
     }
 
-    Fichas(Frame frame, int jogador, BiConsumer<Integer, Integer> apostar) {
+    Fichas(Jogador frame, BiConsumer<Integer, Integer> apostar) {
         super(frame);
 
-        this.jogador = jogador;
         this.apostar = apostar;
 
         frame.getContentPane().addMouseListener(new MouseAdapter() {
@@ -56,7 +54,7 @@ class Fichas extends Componente {
                 int ficha = pegaFicha(e.getX(), e.getY());
 
                 if (ficha == fichaPressionada && ficha > 0) {
-                    apostar.accept(jogador, ficha);
+                    apostar.accept(jogador(), ficha);
                 }
 
                 fichaPressionada = -1;
@@ -88,6 +86,10 @@ class Fichas extends Componente {
 
     private static BufferedImage pegaImagem(int valor) {
         return imagens.get(valor);
+    }
+
+    private int jogador() {
+        return frame instanceof Jogador ? ((Jogador) frame).jogador : -1;
     }
 
     @Override

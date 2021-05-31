@@ -1,5 +1,6 @@
 package view;
 
+import model.JogadorRemovido;
 import model.Mestre;
 import model.Observable;
 import model.Observer;
@@ -12,9 +13,11 @@ class Jogador extends Frame implements Observer {
 
     private final Botao doubleB, splitB, clearB, dealB, standB, surrenderB, quitB;
 
-    private final int jogador;
+    int jogador;
 
     private final DrawString betStr, balanceStr, segundaMao;
+
+    private final Mesa mesa;
 
     Jogador(Mestre mestre,
             String nome,
@@ -41,37 +44,37 @@ class Jogador extends Frame implements Observer {
         segundaMao = new DrawString(this, 30, 544, "", Color.white);
 
         doubleB = new Botao(225, 600, 114, 40, "imagens/double.png", () -> {
-            onDouble.accept(jogador);
+            onDouble.accept(this.jogador);
             repaint();
         });
 
         splitB = new Botao(344, 600, 114, 40, "imagens/split.png", () -> {
-            onSplit.accept(jogador);
+            onSplit.accept(this.jogador);
             repaint();
         });
 
         clearB = new Botao(463, 600, 114, 40, "imagens/clear.png", () -> {
-            onClear.accept(jogador);
+            onClear.accept(this.jogador);
             repaint();
         });
 
         dealB = new Botao(582, 600, 114, 40, "imagens/deal.png", () -> {
-            onDeal.accept(jogador);
+            onDeal.accept(this.jogador);
             repaint();
         });
         
         standB = new Botao(582, 540, 114, 40, "imagens/stand.png", () -> {
-            onStand.accept(jogador);
+            onStand.accept(this.jogador);
             repaint();
         });
         
         surrenderB = new Botao(463, 540, 114, 40, "imagens/surrender.png", () -> {
-            onStand.accept(jogador);
+            onSurrender.accept(this.jogador);
             repaint();
         });
         
         quitB = new Botao(660, 40, 114, 40, "imagens/quit.png", () -> {
-            onStand.accept(jogador);
+            onQuit.accept(this.jogador);
             repaint();
         });
 
@@ -83,21 +86,33 @@ class Jogador extends Frame implements Observer {
         getContentPane().add(surrenderB);
         getContentPane().add(quitB);
 
-        new Mesa(this, mestre, jogador);
+        mesa = new Mesa(this, mestre);
 
-        new Fichas(this, jogador, apostar);
+        new Fichas(this, apostar);
 
         mestre.addObserver(this);
     }
 
     @Override
     public void update(Observable o, Object arg) {
+        if (arg instanceof JogadorRemovido) {
+            JogadorRemovido jogadorRemovido = ((JogadorRemovido) arg);
+            if (jogadorRemovido.jogador < jogador) {
+                jogador--;  //atualiza o indice do jogador quando um é removido
+            } else if (jogadorRemovido.jogador == jogador) {
+                GUI.escondeJogador(jogador);
+                jogadorRemovido.mestre.removeObserver(this);
+                jogadorRemovido.mestre.removeObserver(mesa);
+            }
+            return;
+        }
+
         Mestre m = (Mestre) arg;
 
         doubleB.setEnabled(m.podeDobrarAposta(jogador));
         splitB.setEnabled(m.podeSplit(jogador));
         clearB.setEnabled(m.podeClear(jogador));
-        dealB.setEnabled(m.podeJogar(jogador));
+        dealB.setEnabled(m.podeDeal(jogador));
         standB.setEnabled(m.podeJogar(jogador));
         surrenderB.setEnabled(m.podeSurrender(jogador));
         quitB.setEnabled(true);//Quit é sempre verdadeiro

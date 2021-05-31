@@ -77,7 +77,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return jogadores.remove(j);
 	}
 
-
 	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
 		for(Jogador jogador : jogadores) {//Para cada jogador
 			jogador.clearHand();//Clear na m�o
@@ -91,14 +90,14 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 	public void dealStart() {//Cartas no inicio da rodada
 		for (Jogador jogador : jogadores) {
-			jogador.dealCarta(baralho.remove(0));
+			dealCarta(jogador);
 		}
-		dealer.dealCarta(baralho.remove(0), false);
+		dealMesaCarta(false);
 
 		for (Jogador jogador : jogadores) {
-			jogador.dealCarta(baralho.remove(0));
+			dealCarta(jogador);
 		}
-		dealer.dealCarta(baralho.remove(0), true);
+		dealMesaCarta();
 
 		notifyObservers(this);
 	}
@@ -106,21 +105,37 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	public void dealCarta() {//Da carta para o jogador da vez
 		jogadores.get(vez).dealCarta(baralho.remove(0));//Da a primeira carta do baralho para o jogador da vez
 		notifyObservers(this);
+
+		if (baralho.size() == 187) { //Embaralha depois de distribuir 10%
+			shuffleBaralho();
+		}
 	}
 
 	public void dealCarta(Jogador jog) {//Da carta para um Jogador
 		jog.dealCarta(baralho.remove(0));
 		notifyObservers(this);
+
+		if (baralho.size() == 187) { //Embaralha depois de distribuir 10%
+			shuffleBaralho();
+		}
 	}
 
 	public void dealMesaCarta() {//Da Carta para a mesa sem Boolean
 		dealer.dealCarta(baralho.remove(0), true);
 		notifyObservers(this);
+
+		if (baralho.size() == 187) { //Embaralha depois de distribuir 10%
+			shuffleBaralho();
+		}
 	}
 
 	public void dealMesaCarta(boolean visible) {//Da Carta para a mesa com Boolean
 		dealer.dealCarta(baralho.remove(0), visible);
 		notifyObservers(this);
+
+		if (baralho.size() == 187) { //Embaralha depois de distribuir 10%
+			shuffleBaralho();
+		}
 	}
 
 	public void stand() {//Stand, confirma a mão atual e passa a vez
@@ -204,11 +219,20 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	public void quit(int jogador){
 		
 		removeJogador(jogador);
+		notifyObservers(new JogadorRemovido(this, jogador));
+
+		if (vez == pegaNumJogadores() && vez > 0) {
+			dealerTurn();
+		}
+
 		notifyObservers(this);
+
 		return;
 	}
 	
 	public void dealerTurn() {//Depois fazer AI do Dealer
+		dealer.pegaMesa().get(0).flip();
+
 		int valor;
 		checkBlackjack();
 
@@ -279,6 +303,10 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return jogador == vez;
 	}
 
+	public boolean podeDeal(int jogador) {
+		return podeJogar(jogador) && jogadores.get(jogador).podeDeal();
+	}
+
 	public boolean podeDobrarAposta(int jogador) {
 		return podeJogar(jogador) && jogadores.get(jogador).podeDobrarAposta();
 	}
@@ -306,8 +334,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		
 		return true;
 	}
-	
-	
+
 	public void apostar(int valor) {
 		if (podeApostar(vez, valor)) {
 			jogadores.get(vez).apostar(valor);
@@ -317,10 +344,16 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 	public List<Integer[]> pegaCartas(int jogador) {
 		List<Integer[]> cartas = new ArrayList<>();
+		List<Carta> mesa;
 
-		Jogador j = jogadores.get(jogador);
+		if (jogador < 0) {
+			mesa = dealer.pegaMesa();
+		} else {
+			Jogador j = jogadores.get(jogador);
+			mesa = j.pegaSegunda() ? j.pegaSplitHand() : j.pegaHand();
+		}
 
-		for (Carta carta : j.pegaSegunda() ? j.pegaSplitHand() : j.pegaHand()) {
+		for (Carta carta : mesa) {
 			cartas.add(new Integer[]{carta.pegaNum(), carta.pegaNaipe(), carta.pegaDeck(), carta.pegaVisibilidade() ? 1 : 0});
 		}
 

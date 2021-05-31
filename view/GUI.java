@@ -18,9 +18,9 @@ public class GUI {
 
 	private GUI() {}
 
-	public static void mostraDealer() {
+	public static void mostraDealer(Mestre mestre) {
 		if (dealer == null) {
-			dealer = new Dealer();
+			dealer = new Dealer(mestre);
 		}
 		dealer.setVisible(true);
 	}
@@ -58,7 +58,7 @@ public class GUI {
 	}
 
 	public static void escondeJogador(int jogador) {
-		jogadores.get(jogador).dispose();
+		jogadores.remove(jogador).dispose();
 	}
 
 	public static void mostraTelaInicial(Consumer<List<String>> novoJogo, Runnable carregarJogo) {
