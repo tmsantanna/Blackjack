@@ -7,6 +7,7 @@ class Jogador {
 		private List<Carta> splitHand = new ArrayList<Carta>();//Carta que o jogador tem é mão
 		private boolean segunda = false;
 		private boolean flagSplitAs = false;
+		private boolean apostado = false;
 		private int fichas = 500;
 		private int aposta = 0;
 
@@ -29,6 +30,7 @@ class Jogador {
 			splitHand.clear();//Clear
 			flagSplitAs = false;
 			segunda = false;
+			apostado = false;
 			aposta = 0;
 			fichas = 500;
 			
@@ -101,7 +103,7 @@ class Jogador {
 		}
 
 		boolean apostar(int valor) {
-			if (valor < 0 || valor > fichas) return false;
+			if (valor < 0 || valor > fichas || apostado) return false;
 
 			aposta += valor;
 			fichas -= valor;
@@ -110,7 +112,7 @@ class Jogador {
 		}
 
 		boolean diminuirAposta(int valor) {
-			if (valor < 0 || valor > aposta) return false;
+			if (valor < 0 || valor > aposta || apostado) return false;
 
 			aposta -= valor;
 			fichas += valor;
@@ -123,20 +125,36 @@ class Jogador {
 			return;
 		}
 
+		void deal() {
+			apostado = true;
+		}
+
 		boolean podeDeal() {
-			return aposta >= 20;
+			return !apostado && aposta >= 20 && aposta <= 100;
+		}
+
+		boolean podeHit() {
+			return apostado;
+		}
+
+		boolean podeStand() {
+			return apostado;
+		}
+
+		boolean podeApostar() {
+			return !apostado;
 		}
 
 		boolean podeApostar(int valor) {
-			return valor >= 0 && valor <= fichas && valor + aposta <= 100;
+			return !apostado && valor >= 0 && valor <= fichas && valor + aposta <= 100;
 		}
 
 		boolean podeDiminuirAposta(int valor) {
-			return valor >= 0 && valor <= aposta;
+			return !apostado && valor >= 0 && valor <= aposta;
 		}
 
 		boolean podeDobrarAposta() {
-			return podeApostar(aposta) && hand.size() == 2;
+			return podeApostar(aposta) && aposta >= 10 && hand.size() == 2;
 		}
 		
 		boolean podeSplit() {

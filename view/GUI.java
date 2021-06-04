@@ -35,6 +35,7 @@ public class GUI {
 									   Consumer<Integer> onSplit,
 									   Consumer<Integer> onClear,
 									   Consumer<Integer> onDeal,
+									   Consumer<Integer> onHit,
 									   Consumer<Integer> onStand,
 									   Consumer<Integer> onSurrender,
 									   Consumer<Integer> onQuit,
@@ -42,12 +43,13 @@ public class GUI {
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
 			for (int i = 0; i < nomes.size(); i++) {
-				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear, onDeal, onStand, onSurrender, onQuit, apostar));
+				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear,
+						onDeal, onHit, onStand, onSurrender, onQuit, apostar));
 			}
 		}
 
-		for (Jogador jogador : jogadores) {
-			jogador.setVisible(true);
+		for (int i = jogadores.size() - 1; i >= 0; i--) {
+			jogadores.get(i).setVisible(true);
 		}
 	}
 

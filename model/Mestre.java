@@ -153,11 +153,17 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return;
 	}
 
+	public void deal() {
+		jogadores.get(vez).deal();
+		notifyObservers(this);
+	}
+
 	public void hit() {//Pede mais uma Carta
 
 		dealCarta();//Da a carta
 
 		if (jogadores.get(vez).caclHand() > 21) {
+			notifyObservers(new JogadorPassouDe21(this, vez));
 			stand();
 		}
 
@@ -307,6 +313,14 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return podeJogar(jogador) && jogadores.get(jogador).podeDeal();
 	}
 
+	public boolean podeHit(int jogador) {
+		return podeJogar(jogador) && jogadores.get(jogador).podeHit();
+	}
+
+	public boolean podeStand(int jogador) {
+		return podeJogar(jogador) && jogadores.get(jogador).podeStand();
+	}
+
 	public boolean podeDobrarAposta(int jogador) {
 		return podeJogar(jogador) && jogadores.get(jogador).podeDobrarAposta();
 	}
@@ -315,8 +329,12 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return podeJogar(jogador) && jogadores.get(jogador).podeSplit();
 	}
 
-	public boolean podeClear(int jogador) {
+	public boolean podeClear() {
 		return vez == pegaNumJogadores();
+	}
+
+	public boolean podeApostar(int jogador) {
+		return podeJogar(jogador) && jogadores.get(jogador).podeApostar();
 	}
 
 	public boolean podeApostar(int jogador, int valor) {
@@ -328,6 +346,10 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 	
 	public boolean podeSurrender(int jogador) {
+		if (vez != jogador) {
+			return false;
+		}
+
 		if (jogadores.get(jogador).pegaHand().size()>2){
 			return false;
 		}

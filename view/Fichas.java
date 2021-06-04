@@ -22,6 +22,7 @@ class Fichas extends Componente {
     private Botao aumentar, diminuir;
 
     private boolean aumentarAposta = true;
+    private boolean visible = true;
 
     static {
         carregaImagem(1);
@@ -117,8 +118,17 @@ class Fichas extends Componente {
         return frame instanceof Jogador ? ((Jogador) frame).jogador : -1;
     }
 
+    public void setVisible(boolean visible) {
+        aumentar.setVisible(visible);
+        diminuir.setVisible(visible);
+        this.visible = visible;
+        frame.repaint();
+    }
+
     @Override
     void paint(Graphics2D g) {
+        if (!visible) return;
+
         for (Map.Entry<Integer, Point> ficha : FICHAS.entrySet()) {
             g.drawImage(pegaImagem(ficha.getKey()), ficha.getValue().x, ficha.getValue().y, null);
         }

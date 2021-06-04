@@ -14,6 +14,11 @@ class TelaInicial extends Frame {
     TelaInicial(Consumer<List<String>> onNovo, Runnable onLoad) {
     	setTitle("TelaInicial");
 
+		t1.addActionListener(e -> onNovo.accept(getText()));
+		t2.addActionListener(e -> onNovo.accept(getText()));
+		t3.addActionListener(e -> onNovo.accept(getText()));
+		t4.addActionListener(e -> onNovo.accept(getText()));
+
     	getContentPane().add(t1);
     	getContentPane().add(t2);
     	getContentPane().add(t3);

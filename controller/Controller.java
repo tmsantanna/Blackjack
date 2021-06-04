@@ -1,20 +1,23 @@
 package controller;
 
+import model.JogadorPassouDe21;
 import model.Mestre;
+import model.Observable;
+import model.Observer;
 import view.GUI;
 
 import javax.swing.*;
 import java.util.List;
 
-public class Controller {
+public class Controller implements Observer {
 
-    private static Mestre mestre;
+    private Mestre mestre;
 
-    public static void main(String[] args) {
-        GUI.mostraTelaInicial(Controller::novoJogo, Controller::carregarJogo);
+    public Controller() {
+        GUI.mostraTelaInicial(this::novoJogo, this::carregarJogo);
     }
 
-    private static void novoJogo(List<String> nomes) {
+    private void novoJogo(List<String> nomes) {
         if (nomes.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Insira pelo menos um nome!");
             return;
@@ -23,72 +26,62 @@ public class Controller {
         GUI.escondeTelaInicial();
 
         mestre = new Mestre(nomes);
+        mestre.addObserver(this);
 
         GUI.mostraDealer(mestre);
-        GUI.mostraJogadores(mestre, nomes,
-                Controller::onDouble, Controller::onSplit,
-                Controller::onClear, Controller::onDeal,
-                Controller::onStand, Controller::onSurrender,
-                Controller::onQuit, Controller::apostar);
+        GUI.mostraJogadores(mestre, nomes, this::onDouble, this::onSplit, this::onClear, this::onDeal,
+                this::onHit, this::onStand, this::onSurrender, this::onQuit, this::apostar);
 
         mestre.dealStart();
     }
 
-    private static void carregarJogo() {
+    private void carregarJogo() {
 
     }
 
-    private static void onDouble(int jogador) {
+    private void onDouble(int jogador) {
         if (mestre.podeDobrarAposta(jogador)) {
             mestre.doubleAposta();
         }
     }
 
-    private static void onSplit(int jogador) {
+    private void onSplit(int jogador) {
         if (mestre.podeSplit(jogador)) {
             mestre.split();
         }
     }
 
-    private static void onClear(int jogador) {
-        if (mestre.podeClear(jogador)) {
+    private void onClear(int jogador) {
+        if (mestre.podeClear()) {
             mestre.clear(jogador);
         }
     }
 
-    private static void onDeal(int jogador) {
-        boolean segundaMao = mestre.pegaSegunda(jogador);
-
+    private void onDeal(int jogador) {
         if (mestre.podeDeal(jogador)) {
-            mestre.hit();
-        }
-
-        String nome = mestre.pegaNome(jogador);
-
-        if (!mestre.podeJogar(jogador)) {
-            if (segundaMao) {
-                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na segunda mão!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21!");
-            }
-        } else if (mestre.pegaSegunda(jogador) && !segundaMao) {
-            JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na primeira mão!");
+            mestre.deal();
         }
     }
 
-    private static void onStand(int jogador) {
+    private void onHit(int jogador) {
+        if (mestre.podeHit(jogador)) {
+            mestre.hit();
+        }
+    }
+
+    private void onStand(int jogador) {
         if (mestre.podeJogar(jogador)) {
             mestre.stand();
         }
     }
 
-    private static void onSurrender(int jogador) {
+    private void onSurrender(int jogador) {
         if (mestre.podeSurrender(jogador)) {
             mestre.surrender();
         }
     }
 
-    private static void onQuit(int jogador) {
+    private void onQuit(int jogador) {
         mestre.quit(jogador);
 
         if (mestre.pegaNumJogadores() == 0) {
@@ -97,7 +90,7 @@ public class Controller {
 
     }
 
-    private static void apostar(int jogador, int aposta) {
+    private void apostar(int jogador, int aposta) {
         if (mestre.podeDiminuirAposta(jogador, -aposta)) {
             mestre.diminuirAposta(-aposta);
         } else if (mestre.podeApostar(jogador, aposta)) {
@@ -105,4 +98,19 @@ public class Controller {
         }
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof JogadorPassouDe21) {
+            JogadorPassouDe21 obj = (JogadorPassouDe21) arg;
+            String nome = mestre.pegaNome(obj.jogador);
+
+            if (!obj.split) {
+                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21!");
+            } else if (obj.segundaMao) {
+                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na segunda mão!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na primeira mão!");
+            }
+        }
+    }
 }
