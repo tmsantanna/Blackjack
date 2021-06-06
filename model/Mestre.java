@@ -315,12 +315,19 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		removeJogador(jogador);
 		notifyObservers(jogador, Tipo.JOGADOR_REMOVIDO);
 
-		if (vez == jogador) {
-			notifyObservers(jogador, Tipo.PROXIMO_JOGADOR);
-		}
+		if (vez != jogador) return;
 
-		if (vez == pegaNumJogadores() && vez > 0) {
-			dealerTurn();
+		if (vez == pegaNumJogadores()) {
+			if (deal) {
+				vez = 0;
+				deal = false;
+				notifyObservers(jogador, Tipo.PROXIMO_JOGADOR, vez);
+				dealStart();
+			} else {
+				vez = -1;
+				notifyObservers(jogador, Tipo.PROXIMO_JOGADOR, vez);
+				dealerTurn();
+			}
 		}
 	}
 
@@ -359,6 +366,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		if (dealer.caclMesa() == 21) {
 			//vitoria jogadores / Dealer
 			vez = -1;
+			notifyObservers(Tipo.MOSTRAR_CARTAS);
 			notifyObservers(Tipo.BLACKJACK);
 			notifyObservers(Tipo.PROXIMO_JOGADOR);
 		}
