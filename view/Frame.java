@@ -12,8 +12,8 @@ class Frame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    boolean add(Componente c) {
-        return ((ContentPane) getContentPane()).add(c);
+    void add(Componente c) {
+        ((ContentPane) getContentPane()).add(c);
     }
 
 }

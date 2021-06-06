@@ -44,8 +44,8 @@ class Fichas extends Componente {
     Fichas(Jogador frame, BiConsumer<Integer, Integer> apostar) {
         super(frame);
 
-        aumentar = new Botao(700, 420, "imagens/aumentarAposta.png", this::toggleAposta);
-        diminuir = new Botao(700, 420, "imagens/diminuirAposta.png", this::toggleAposta);
+        aumentar = new Botao("AUMENTAR APOSTA", 710, 420, 18, this::toggleAposta);
+        diminuir = new Botao("DIMINUIR APOSTA", 724, 420, 18, this::toggleAposta);
         diminuir.setVisible(false);
 
         frame.getContentPane().add(aumentar);
