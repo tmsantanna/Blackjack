@@ -113,6 +113,7 @@ class Jogador extends Frame {
         mestre.addObserver(this, this::onSplit, Tipo.SPLIT);
         mestre.addObserver(this, this::onSegundaMao, Tipo.SEGUNDA_MAO);
         mestre.addObserver(this, this::onJogada, Tipo.PASSOU_DE_21, Tipo.NOVA_CARTA, Tipo.PROXIMO_JOGADOR);
+        mestre.addObserver(this, this::onBlackjack, Tipo.BLACKJACK);
     }
 
     private void onJogadorRemovido(Evento evento) {
@@ -169,4 +170,20 @@ class Jogador extends Frame {
 
         repaint();
     }
+
+    private void onBlackjack(Evento evento) {
+        if (evento.jogador != jogador) return;
+
+        doubleB.setVisible(false);
+        splitB.setVisible(false);
+        clearB.setVisible(false);
+        dealB.setEnabled(false);
+        dealB.setVisible(false);
+        hitB.setVisible(false);
+        standB.setVisible(false);
+        surrenderB.setVisible(false);
+        fichas.setVisible(false);
+        repaint();
+    }
+
 }
