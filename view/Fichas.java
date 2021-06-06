@@ -13,8 +13,6 @@ import java.util.function.BiConsumer;
 
 class Fichas extends Componente {
 
-    private final BiConsumer<Integer, Integer> apostar;
-
     private static final int TAMANHO_FICHA = 50;
     private static final Map<Integer, Point> FICHAS = new HashMap<>();
     private static final Map<Integer, BufferedImage> imagens = new HashMap<>();
@@ -43,10 +41,8 @@ class Fichas extends Componente {
     Fichas(Jogador frame, BiConsumer<Integer, Integer> apostar) {
         super(frame);
 
-        this.apostar = apostar;
-
         aumentar = new Botao(700, 420, "imagens/aumentarAposta.png", this::toggleAposta);
-        diminuir = new Botao(700, 420, "imagens/diminiurAposta.png", this::toggleAposta);
+        diminuir = new Botao(700, 420, "imagens/diminuirAposta.png", this::toggleAposta);
         diminuir.setVisible(false);
 
         frame.getContentPane().add(aumentar);
@@ -119,8 +115,8 @@ class Fichas extends Componente {
     }
 
     public void setVisible(boolean visible) {
-        aumentar.setVisible(visible);
-        diminuir.setVisible(visible);
+        aumentar.setVisible(visible && aumentarAposta);
+        diminuir.setVisible(visible && !aumentarAposta);
         this.visible = visible;
         frame.repaint();
     }

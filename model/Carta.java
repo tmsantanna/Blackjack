@@ -1,66 +1,65 @@
 package model;
 
 class Carta {
-	private int valor;//Valor da Carta em blackjack
-	private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
-	private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
-	private boolean visible;//Se a carta está sendo vista ou não
-	private int deck;//0 azul e 1 vermelho
+    private int valor;//Valor da Carta em blackjack
+    private int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
+    private int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
+    private boolean visible;//Se a carta está sendo vista ou não
+    private int deck;//0 azul e 1 vermelho
 
-	Carta(int n, int na, int d) {
-		num = n;
-		naipe = na;
-		visible = true;
-		deck = d;
-		calculaValor(n);
-		return;
-	}
-	
-	public void calculaValor(int n) {
-		if (n>9) {
-			valor = 10;
-		}
-		else {
-			valor = n;
-		}
-		return;
-	}
-	
-	public int pegaValor() {//Pega o valor
-		return valor;
-	}
-	public int pegaNum() { //Pega o numero da carta
-		return num;
-	}
-	public int pegaNaipe() { //Pega o numero da carta
-		return naipe;
-	}
-	public boolean pegaVisibilidade() {//Pega para ver se a carta é visivel ou não
-		return visible;
-		
-	}
-	
-	public void flip() {//Vira a carta
-		if (visible) {//Se ela é visivel, fica invisivel
-			visible = false;
-		}
-		else {//Se ela não é visivel, fica visivel
-			visible = true;
-		}
-	}
-	
-	public int pegaDeck() {
-		return deck;
-	}
+    Carta(int n, int na, int d) {
+        num = n;
+        naipe = na;
+        visible = true;
+        deck = d;
+        calculaValor(n);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Carta)) return false;
+    public void calculaValor(int n) {
+        if (n > 9) {
+            valor = 10;
+        } else {
+            valor = n;
+        }
+    }
 
-		Carta c = (Carta) o;
+    public int pegaValor() {//Pega o valor
+        return valor;
+    }
 
-		return naipe == c.naipe && num == c.num;
-	}
+    public int pegaNum() { //Pega o numero da carta
+        return num;
+    }
+
+    public int pegaNaipe() { //Pega o numero da carta
+        return naipe;
+    }
+
+    public boolean pegaVisibilidade() {//Pega para ver se a carta é visivel ou não
+        return visible;
+
+    }
+
+    public int pegaDeck() {
+        return deck;
+    }
+
+    public Integer[] pegaInfo() {
+        return new Integer[]{num, naipe, deck, visible ? 1 : 0};
+    }
+
+    public void flip() {//Vira a carta
+        visible = !visible;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Carta)) return false;
+
+        Carta c = (Carta) o;
+
+        return naipe == c.naipe && num == c.num;
+    }
 
 }
 

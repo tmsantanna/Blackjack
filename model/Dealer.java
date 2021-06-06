@@ -2,12 +2,9 @@ package model;
 import java.util.*;
 
 class Dealer {
-	private List<Carta> mesa =  new ArrayList<Carta>();//Cartas na mesa
-	
-	
+	private List<Carta> mesa = new ArrayList<>();//Cartas na mesa
 
-	public Dealer() {
-		return;
+	Dealer() {
 	}
 	
 	void dealCarta(Carta novaCarta, boolean visible) {//Adiciona cartas a mesa

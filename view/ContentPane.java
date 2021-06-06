@@ -7,23 +7,13 @@ import java.util.List;
 
 class ContentPane extends JPanel {
 
-	private List<Componente> componentes = new ArrayList<>();
+	private final List<Componente> componentes = new ArrayList<>();
 
 	boolean add(Componente c) {
 		if (componentes.contains(c)) return false;
 
 		EventQueue.invokeLater(() -> {
 			componentes.add(c);
-			repaint();
-		});
-		return true;
-	}
-
-	boolean remove(Componente c) {
-		if (!componentes.contains(c)) return false;
-
-		EventQueue.invokeLater(() -> {
-			componentes.remove(c);
 			repaint();
 		});
 		return true;

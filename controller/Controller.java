@@ -1,23 +1,24 @@
 package controller;
 
-import model.JogadorPassouDe21;
+import model.Evento;
 import model.Mestre;
-import model.Observable;
-import model.Observer;
 import view.GUI;
 
 import javax.swing.*;
 import java.util.List;
 
-public class Controller implements Observer {
+public class Controller {
 
-    private Mestre mestre;
+    private static Mestre mestre;
 
-    public Controller() {
-        GUI.mostraTelaInicial(this::novoJogo, this::carregarJogo);
+    private Controller() {
     }
 
-    private void novoJogo(List<String> nomes) {
+    public static void comecarJogo() {
+        GUI.mostraTelaInicial(Controller::novoJogo, Controller::carregarJogo);
+    }
+
+    private static void novoJogo(List<String> nomes) {
         if (nomes.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Insira pelo menos um nome!");
             return;
@@ -26,62 +27,64 @@ public class Controller implements Observer {
         GUI.escondeTelaInicial();
 
         mestre = new Mestre(nomes);
-        mestre.addObserver(this);
+        mestre.addObserver(null, Controller::onPassouDe21, Evento.Tipo.PASSOU_DE_21);
+        mestre.addObserver(null, Controller::onProximoJogador, Evento.Tipo.PROXIMO_JOGADOR);
+        mestre.addObserver(null, Controller::onBlackjack, Evento.Tipo.BLACKJACK);
 
         GUI.mostraDealer(mestre);
-        GUI.mostraJogadores(mestre, nomes, this::onDouble, this::onSplit, this::onClear, this::onDeal,
-                this::onHit, this::onStand, this::onSurrender, this::onQuit, this::apostar);
+        GUI.mostraJogadores(mestre, nomes, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
+                Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
 
-        mestre.dealStart();
+        mestre.comecarRodada();
     }
 
-    private void carregarJogo() {
+    private static void carregarJogo() {
 
     }
 
-    private void onDouble(int jogador) {
+    private static void onDouble(int jogador) {
         if (mestre.podeDobrarAposta(jogador)) {
             mestre.doubleAposta();
         }
     }
 
-    private void onSplit(int jogador) {
+    private static void onSplit(int jogador) {
         if (mestre.podeSplit(jogador)) {
             mestre.split();
         }
     }
 
-    private void onClear(int jogador) {
+    private static void onClear(int jogador) {
         if (mestre.podeClear()) {
             mestre.clear(jogador);
         }
     }
 
-    private void onDeal(int jogador) {
+    private static void onDeal(int jogador) {
         if (mestre.podeDeal(jogador)) {
             mestre.deal();
         }
     }
 
-    private void onHit(int jogador) {
+    private static void onHit(int jogador) {
         if (mestre.podeHit(jogador)) {
             mestre.hit();
         }
     }
 
-    private void onStand(int jogador) {
+    private static void onStand(int jogador) {
         if (mestre.podeJogar(jogador)) {
             mestre.stand();
         }
     }
 
-    private void onSurrender(int jogador) {
+    private static void onSurrender(int jogador) {
         if (mestre.podeSurrender(jogador)) {
             mestre.surrender();
         }
     }
 
-    private void onQuit(int jogador) {
+    private static void onQuit(int jogador) {
         mestre.quit(jogador);
 
         if (mestre.pegaNumJogadores() == 0) {
@@ -90,7 +93,7 @@ public class Controller implements Observer {
 
     }
 
-    private void apostar(int jogador, int aposta) {
+    private static void apostar(int jogador, int aposta) {
         if (mestre.podeDiminuirAposta(jogador, -aposta)) {
             mestre.diminuirAposta(-aposta);
         } else if (mestre.podeApostar(jogador, aposta)) {
@@ -98,19 +101,41 @@ public class Controller implements Observer {
         }
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof JogadorPassouDe21) {
-            JogadorPassouDe21 obj = (JogadorPassouDe21) arg;
-            String nome = mestre.pegaNome(obj.jogador);
+    private static void onPassouDe21(Evento evento) {
+        int jogador = mestre.pegaVez();
 
-            if (!obj.split) {
-                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21!");
-            } else if (obj.segundaMao) {
-                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na segunda mão!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Jogador " + nome + " passou de 21 na primeira mão!");
-            }
+        if (jogador == -1) {
+            JOptionPane.showMessageDialog(null, "Dealer passou de 21!");
+            return;
+        }
+
+        String mensagem = "Jogador " + mestre.pegaNome(jogador) + " passou de 21";
+
+        if (!mestre.temDuasMaos(jogador)) {
+            JOptionPane.showMessageDialog(null, mensagem + "!");
+        } else if (mestre.pegaSegunda(jogador)) {
+            JOptionPane.showMessageDialog(null, mensagem + " na segunda mão!");
+        } else {
+            JOptionPane.showMessageDialog(null, mensagem + " na primeira mão!");
         }
     }
+
+    private static void onProximoJogador(Evento evento) {
+        if (evento.args.length < 1) return;
+
+        int jogador = (int) evento.args[0];
+
+        if (jogador != evento.jogador) {
+            JOptionPane.showMessageDialog(null, "Vez de " + mestre.pegaNome(jogador));
+        }
+
+        GUI.focarJanela(jogador);
+    }
+
+    private static void onBlackjack(Evento evento) {
+        String nome = mestre.pegaNome(evento.jogador);
+
+        JOptionPane.showMessageDialog(null, nome + " tem um blackjack!");
+    }
+
 }

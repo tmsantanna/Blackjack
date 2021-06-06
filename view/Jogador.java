@@ -1,23 +1,20 @@
 package view;
 
-import model.JogadorRemovido;
+import model.Evento;
+import model.Evento.Tipo;
 import model.Mestre;
-import model.Observable;
-import model.Observer;
 
 import java.awt.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-class Jogador extends Frame implements Observer {
+class Jogador extends Frame {
 
     private final Botao doubleB, splitB, clearB, dealB, standB, surrenderB, quitB, hitB;
 
     int jogador;
 
-    private final DrawString betStr, balanceStr, segundaMao;
-
-    private final Mesa mesa;
+    private final DrawString betStr, balanceStr, indicacaoMao;
 
     private final Fichas fichas;
 
@@ -42,9 +39,9 @@ class Jogador extends Frame implements Observer {
         new DrawImagem(this, 10, 571, "imagens/betBlackBar.png");
         new DrawImagem(this, 10, 621, "imagens/betBlackBar.png");
         new DrawImagem(this, 700, 475, "imagens/fichaMesa.png");
-        betStr = new DrawString(this, 30, 594, "Bet 0", Color.white);
-        balanceStr = new DrawString(this, 30, 644, "Balance 500", Color.white);
-        segundaMao = new DrawString(this, 30, 544, "", Color.white);
+        betStr = new DrawString(this, 30, 594, "Bet 0.0", Color.white);
+        balanceStr = new DrawString(this, 30, 644, "Balance 500.0", Color.white);
+        indicacaoMao = new DrawString(this, 30, 544, "", Color.white);
 
         doubleB = new Botao(225, 600, "imagens/double.png", () -> {
             onDouble.accept(this.jogador);
@@ -95,31 +92,56 @@ class Jogador extends Frame implements Observer {
         getContentPane().add(surrenderB);
         getContentPane().add(quitB);
 
-        mesa = new Mesa(this, mestre);
+        new Cartas(this, mestre);
 
         fichas = new Fichas(this, apostar);
-        fichas.setVisible(false);
 
-        mestre.addObserver(this);
+        mestre.addObserver(this, this::onJogadorRemovido, Tipo.JOGADOR_REMOVIDO);
+        mestre.addObserver(this, this::onMudancaNaAposta, Tipo.MUDANCA_NA_APOSTA);
+        mestre.addObserver(this, this::onSplit, Tipo.SPLIT);
+        mestre.addObserver(this, this::onSegundaMao, Tipo.SEGUNDA_MAO);
+        mestre.addObserver(this, this::onJogada, Tipo.PASSOU_DE_21, Tipo.NOVA_CARTA, Tipo.PROXIMO_JOGADOR);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof JogadorRemovido) {
-            JogadorRemovido jogadorRemovido = ((JogadorRemovido) arg);
-            if (jogadorRemovido.jogador < jogador) {
-                jogador--;  //atualiza o indice do jogador quando um é removido
-            } else if (jogadorRemovido.jogador == jogador) {
-                GUI.escondeJogador(jogador);
-                jogadorRemovido.mestre.removeObserver(this);
-                jogadorRemovido.mestre.removeObserver(mesa);
-            }
-            return;
-        } else if (!(arg instanceof Mestre)) {
-            return;
+    private void onJogadorRemovido(Evento evento) {
+        if (evento.jogador < jogador) {
+            jogador--;  //atualiza o indice do jogador quando um é removido
+            repaint();
+        } else if (evento.jogador == jogador) {
+            GUI.escondeJogador(jogador);
+            evento.mestre.removeObserver(this);
         }
+    }
 
-        Mestre m = (Mestre) arg;
+    private void onMudancaNaAposta(Evento evento) {
+        if (jogador != evento.jogador) return;
+
+        float aposta = (float) evento.args[0];
+        betStr.setTexto("Bet " + aposta);
+
+        float fichas = (float) evento.args[1];
+        balanceStr.setTexto("Balance " + fichas);
+
+        dealB.setEnabled(evento.mestre.podeDeal(jogador));
+        repaint();
+    }
+
+    private void onSplit(Evento evento) {
+        if (jogador != evento.jogador) return;
+
+        indicacaoMao.setTexto("Primeira mão");
+        repaint();
+    }
+
+    private void onSegundaMao(Evento evento) {
+        if (jogador != evento.jogador) return;
+
+        indicacaoMao.setTexto("Segunda mão");
+        repaint();
+    }
+
+    private void onJogada(Evento evento) {
+        Mestre m = evento.mestre;
 
         doubleB.setVisible(m.podeDobrarAposta(jogador));
         splitB.setVisible(m.podeSplit(jogador));
@@ -132,18 +154,6 @@ class Jogador extends Frame implements Observer {
         quitB.setEnabled(true);//Quit é sempre verdadeiro
 
         fichas.setVisible(m.podeApostar(jogador));
-
-        int aposta = m.pegaAposta(jogador);
-        betStr.setTexto("Bet " + aposta);
-
-        int fichas = m.pegaFichas(jogador);
-        balanceStr.setTexto("Balance " + fichas);
-
-        if (!m.temDuasMaos(jogador)) {
-            segundaMao.setTexto("");
-        } else {
-            segundaMao.setTexto((m.pegaSegunda(jogador) ? "Segunda" : "Primeira") + " mão");
-        }
 
         repaint();
     }

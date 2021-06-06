@@ -34,7 +34,7 @@ public  class TestDealer {
 	}
 
 	/**
-	 * Testa se as cartas são reomvidas após o final de uma rodada
+	 * Testa se as cartas são removidas após o final de uma rodada
 	 */
 	@Test
 	public void testClearMesa() {

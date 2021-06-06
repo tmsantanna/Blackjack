@@ -23,7 +23,7 @@ public class TestJogador {
 	}
 
 	/**
-	 * Testa se as cartas são reomvidas após o final de uma rodada
+	 * Testa se as cartas são removidas após o final de uma rodada
 	 */
 	@Test
 	public void testClearHand(){
@@ -106,7 +106,7 @@ public class TestJogador {
 	public void testCaclFichas() {
 		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
 		
-		assertEquals(500, j1.pegaFichas());
+		assertEquals(500, j1.pegaFichas(), 0);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class TestJogador {
 		Jogador j1 = new Jogador("1811526");//Fichas já foram criadas
 		j1.apostar(100);
 
-		assertEquals(100, j1.pegaAposta());
+		assertEquals(100, j1.pegaAposta(), 0);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class TestJogador {
 		assertFalse(j1.podeApostar(-100));
 		assertFalse(j1.apostar(-100));
 
-		assertEquals(0, j1.pegaAposta());
+		assertEquals(0, j1.pegaAposta(), 0);
 	}
 
 }

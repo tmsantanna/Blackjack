@@ -1,33 +1,67 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import model.Evento.Tipo;
+
+import java.util.*;
+
+class Observers {
+
+    final Object parent;
+    private final List<Observer> observers = new ArrayList<>();
+    private final List<List<Tipo>> tipos = new ArrayList<>();
+
+    Observers(Object parent, Observer observer, Tipo[] tipos) {
+        this.parent = parent;
+        addObserver(observer, tipos);
+    }
+
+    void addObserver(Observer observer, Tipo[] tipos) {
+        observers.add(observer);
+        this.tipos.add(Arrays.asList(tipos));
+    }
+
+    void update(Evento evento) {
+        for (int index = 0; index < observers.size(); index++) {
+            if (tipos.get(index).contains(evento.tipo)) {
+                observers.get(index).update(evento);
+            }
+        }
+    }
+
+}
 
 public abstract class Observable {
 
-    private final List<Observer> observers = new ArrayList<>();
+    private final List<Observers> observers = new ArrayList<>();
 
-    private final List<Observer> removeQueue = new ArrayList<>();
+    private final List<Object> removeQueue = new ArrayList<>();
 
     private boolean notifying = false;
 
-    public void addObserver(Observer o) {
-        observers.add(o);
+    public void addObserver(Object parent, Observer observer, Tipo... tipos) {
+        for (Observers observers : observers) {
+            if (observers.parent == parent) {
+                observers.addObserver(observer, tipos);
+                return;
+            }
+        }
+
+        observers.add(new Observers(parent, observer, tipos));
     }
 
-    public void removeObserver(Observer o) {
-        removeQueue.add(o);
+    public void removeObserver(Object parent) {
+        removeQueue.add(parent);
 
         if (!notifying) {
             removeObserverQueue();
         }
     }
 
-    protected void notifyObservers(Object arg) {
+    protected void notifyObservers(Evento evento) {
         notifying = true;
 
-        for (Observer observer : observers) {
-            observer.update(this, arg);
+        for (Observers observers : observers) {
+            observers.update(evento);
         }
 
         notifying = false;
@@ -36,9 +70,7 @@ public abstract class Observable {
     }
 
     private void removeObserverQueue() {
-        for (Observer observer : removeQueue) {
-            observers.remove(observer);
-        }
+        observers.removeIf(observer -> removeQueue.contains(observer.parent));
         removeQueue.clear();
     }
 

@@ -9,7 +9,7 @@ class Dealer extends Frame {
 
         new DrawImagem(this, 0, 0, "imagens/blackjackBKG.png");
 
-        new Mesa(this, mestre);
+        new Cartas(this, mestre);
     }
 
 }
