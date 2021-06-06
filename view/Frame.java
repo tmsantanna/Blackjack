@@ -6,7 +6,6 @@ class Frame extends JFrame {
 
     Frame() {
         setSize(GUI.LARGURA, GUI.ALTURA);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setContentPane(new ContentPane());
         setLayout(null);

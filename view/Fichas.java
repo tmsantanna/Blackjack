@@ -15,9 +15,12 @@ class Fichas extends Componente {
 
     private static final int TAMANHO_FICHA = 50;
     private static final Map<Integer, Point> FICHAS = new HashMap<>();
-    private static final Map<Integer, BufferedImage> imagens = new HashMap<>();
+    private static final Map<String, BufferedImage> imagens = new HashMap<>();
 
-    private Botao aumentar, diminuir;
+    private final Botao aumentar, diminuir;
+
+    private int fichaPressionada = -1;
+    private int fichaHover = -1;
 
     private boolean aumentarAposta = true;
     private boolean visible = true;
@@ -48,23 +51,22 @@ class Fichas extends Componente {
         frame.getContentPane().add(aumentar);
         frame.getContentPane().add(diminuir);
 
-        frame.getContentPane().addMouseListener(new MouseAdapter() {
-
-            private int fichaPressionada;
+        MouseAdapter adapter = new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() != MouseEvent.BUTTON1) return;
 
-                fichaPressionada = pegaFicha(e.getX(), e.getY());
+                int ficha = pegaFicha(e.getX(), e.getY());
+                if (ficha != fichaPressionada) {
+                    fichaPressionada = ficha;
+                    frame.repaint();
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.getButton() != MouseEvent.BUTTON1) {
-                    fichaPressionada = -1;
-                    return;
-                }
+                if (e.getButton() != MouseEvent.BUTTON1) return;
 
                 int ficha = pegaFicha(e.getX(), e.getY());
 
@@ -72,7 +74,31 @@ class Fichas extends Componente {
                     apostar.accept(jogador(), aumentarAposta ? ficha : -ficha);
                 }
 
-                fichaPressionada = -1;
+
+                if (fichaPressionada != -1) {
+                    fichaPressionada = -1;
+                    frame.repaint();
+                }
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int ficha = pegaFicha(e.getX(), e.getY());
+
+                if (ficha != fichaHover) {
+                    fichaHover = ficha;
+                    frame.repaint();
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int ficha = pegaFicha(e.getX(), e.getY());
+
+                if (ficha != fichaHover) {
+                    fichaHover = ficha;
+                    frame.repaint();
+                }
             }
 
             private int pegaFicha(int x, int y) {
@@ -87,7 +113,10 @@ class Fichas extends Componente {
                 return -1;
             }
 
-        });
+        };
+
+        frame.getContentPane().addMouseListener(adapter);
+        frame.getContentPane().addMouseMotionListener(adapter);
     }
 
     private void toggleAposta() {
@@ -99,15 +128,46 @@ class Fichas extends Componente {
 
     private static void carregaImagem(int valor) {
         try {
-            imagens.put(valor, ImageIO.read(new File("imagens/ficha " + valor + "$.png")));
+            BufferedImage imagem = ImageIO.read(new File("imagens/ficha " + valor + "$.png"));
+            imagens.put(valor + "", imagem);
+            imagens.put("g" + valor, grayScale(imagem));
+            imagem = darker(imagem);
+            imagens.put("d1" + valor, imagem);
+            imagens.put("d2" + valor, darker(imagem));
         } catch (IOException e) {
             System.err.println("Erro ao carregar imagem: imagens/ficha" + valor + "$.png");
             System.exit(-1);
         }
     }
 
-    private static BufferedImage pegaImagem(int valor) {
-        return imagens.get(valor);
+    private static BufferedImage grayScale(BufferedImage img) {
+        BufferedImage grayScale = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        grayScale.getGraphics().drawImage(img, 0, 0, null);
+        return grayScale;
+    }
+
+    private static BufferedImage darker(BufferedImage img) {
+        BufferedImage darker = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                int argb = img.getRGB(x, y);
+                int a = argb & 0xFF000000, r = argb >> 16 & 0xFF, g = argb >> 8 & 0xFF, b = argb & 0xFF;
+                r = (int) (r * 0.7) << 16;
+                g = (int) (g * 0.7) << 8;
+                b = (int) (b * 0.7);
+                darker.setRGB(x, y, a | r | g | b);
+            }
+        }
+
+        return darker;
+    }
+
+    private static BufferedImage pegaImagem(int valor, boolean visible, int darker) {
+        if (!visible) return imagens.get("g" + valor);
+        else if (darker == 0) return imagens.get(valor + "");
+
+        return imagens.get(String.format("d%d%d", darker, valor));
     }
 
     private int jogador() {
@@ -123,10 +183,14 @@ class Fichas extends Componente {
 
     @Override
     void paint(Graphics2D g) {
-        if (!visible) return;
-
         for (Map.Entry<Integer, Point> ficha : FICHAS.entrySet()) {
-            g.drawImage(pegaImagem(ficha.getKey()), ficha.getValue().x, ficha.getValue().y, null);
+            int valor = ficha.getKey();
+            int darker = 0;
+
+            if (fichaPressionada == valor) darker = 2;
+            else if (fichaHover == valor && fichaPressionada == -1) darker = 1;
+
+            g.drawImage(pegaImagem(valor, visible, darker), ficha.getValue().x, ficha.getValue().y, null);
         }
     }
 }
