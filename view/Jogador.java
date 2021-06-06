@@ -5,6 +5,8 @@ import model.Evento.Tipo;
 import model.Mestre;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -31,6 +33,16 @@ class Jogador extends Frame {
             Consumer<Integer> onQuit,
             BiConsumer<Integer, Integer> apostar) {
         setTitle(nome);
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onQuit.accept(Jogador.this.jogador);
+            }
+
+        });
 
         this.jogador = jogador;
 
