@@ -125,7 +125,7 @@ public class Controller {
 
         int jogador = (int) evento.args[0];
 
-        if (jogador != evento.jogador) {
+        if (mestre.pegaNumJogadores() > 1 || jogador == -1) {
             JOptionPane.showMessageDialog(null, "Vez de " + mestre.pegaNome(jogador));
         }
 
