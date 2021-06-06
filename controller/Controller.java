@@ -121,7 +121,7 @@ public class Controller {
     }
 
     private static void onProximoJogador(Evento evento) {
-        if (evento.args.length < 1) return;
+        if (evento.args.length < 1 || mestre.pegaNumJogadores() == 0) return;
 
         int jogador = (int) evento.args[0];
 
