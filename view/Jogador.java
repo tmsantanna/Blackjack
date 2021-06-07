@@ -16,7 +16,7 @@ class Jogador extends Frame {
 
     int jogador;
 
-    private final DrawString betStr, balanceStr, indicacaoMao;
+    private final DrawString betStr, balanceStr;
 
     private final Fichas fichas;
 
@@ -53,7 +53,6 @@ class Jogador extends Frame {
         new DrawImagem(this, 700, 475, "imagens/fichaMesa.png");
         betStr = new DrawString(this, 30, 594, "Bet 0.0", Color.white);
         balanceStr = new DrawString(this, 30, 644, "Balance 500.0", Color.white);
-        indicacaoMao = new DrawString(this, 30, 544, "", Color.white);
 
         doubleB = new Botao("DOUBLE", 225, 600, () -> {
             onDouble.accept(this.jogador);
@@ -110,8 +109,6 @@ class Jogador extends Frame {
 
         mestre.addObserver(this, this::onJogadorRemovido, Tipo.JOGADOR_REMOVIDO);
         mestre.addObserver(this, this::onMudancaNaAposta, Tipo.MUDANCA_NA_APOSTA);
-        mestre.addObserver(this, this::onSplit, Tipo.SPLIT);
-        mestre.addObserver(this, this::onSegundaMao, Tipo.SEGUNDA_MAO);
         mestre.addObserver(this, this::onJogada, Tipo.PASSOU_DE_21, Tipo.NOVA_CARTA, Tipo.PROXIMO_JOGADOR);
         mestre.addObserver(this, this::onBlackjack, Tipo.BLACKJACK);
     }
@@ -136,20 +133,6 @@ class Jogador extends Frame {
         balanceStr.setTexto("Balance " + fichas);
 
         dealB.setEnabled(evento.mestre.podeDeal(jogador));
-        repaint();
-    }
-
-    private void onSplit(Evento evento) {
-        if (jogador != evento.jogador) return;
-
-        indicacaoMao.setTexto("Primeira mão");
-        repaint();
-    }
-
-    private void onSegundaMao(Evento evento) {
-        if (jogador != evento.jogador) return;
-
-        indicacaoMao.setTexto("Segunda mão");
         repaint();
     }
 

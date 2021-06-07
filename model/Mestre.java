@@ -4,8 +4,6 @@ import model.Evento.Tipo;
 
 import java.util.*;
 
-enum Status { JOGANDO, CLEAR, BLACKJACK, SURRENDER }
-
 public class Mestre extends Observable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
 	private final List<Carta> baralho = new ArrayList<>();//Cartas no baralho
 	private final List<Jogador> jogadores = new ArrayList<>();
@@ -386,7 +384,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 				status.put(jogador, Status.BLACKJACK);
 				notifyObservers(index, Tipo.BLACKJACK);
 
-				if (vez == 0) proximoJogador();
+				if (index == 0) proximoJogador();
 			}
 		}
 
@@ -491,6 +489,12 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		return jogadores.get(jogador).temDuasMaos();
 	}
 
+	public int caclHand(int jogador, boolean segunda) {
+		if (jogador == -1) return dealer.caclMesa();
+
+		return jogadores.get(jogador).caclHand(segunda);
+	}
+
 	private void notifyObservers(int jogador, Tipo tipo, Object... args) {
 		notifyObservers(new Evento(this, jogador, tipo, args));
 	}
@@ -498,5 +502,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	private void notifyObservers(Tipo tipo, Object... args) {
 		notifyObservers(vez, tipo, args);
 	}
+
+	private enum Status { JOGANDO, CLEAR, BLACKJACK, SURRENDER }
 
 }

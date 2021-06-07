@@ -18,8 +18,15 @@ class Cartas extends Componente {
     private final List<Integer[]> primeiraMao = new ArrayList<>();
     private final List<Integer[]> segundaMao = new ArrayList<>();
 
+    private int valorPrimeiraMao, valorSegundaMao;
+
     private boolean esconderPrimeiraCarta;
     private boolean segunda = false;
+
+    private final DrawString valorDaMao = new DrawString(frame, 370, 480, "Valor da Mão: 0", Color.WHITE);
+    private final DrawString indicacaoMao = new DrawString(frame, 30, 544, "", Color.white);
+    private final Botao primeiraMaoB;
+    private final Botao segundaMaoB;
 
     private static final int LARGURA_CARTA = 73;
     private static final int ALTURA_CARTA = 97;
@@ -51,6 +58,17 @@ class Cartas extends Componente {
         mestre.addObserver(this, this::onClearCartas, Tipo.CLEAR_CARTAS);
         mestre.addObserver(this, this::onSplit, Tipo.SPLIT);
         mestre.addObserver(this, this::onJogadorRemovido, Tipo.JOGADOR_REMOVIDO);
+        mestre.addObserver(this, this::onProximoJogador, Tipo.PROXIMO_JOGADOR);
+
+        valorDaMao.setVisible(false);
+
+        primeiraMaoB = new Botao("PRIMEIRA MÃO", 30, 514, 18, () -> mostrarMao(true));
+        segundaMaoB = new Botao("SEGUNDA MÃO", 30, 514, 18, () -> mostrarMao(false));
+
+        primeiraMaoB.setVisible(false);
+        segundaMaoB.setVisible(false);
+        frame.getContentPane().add(primeiraMaoB);
+        frame.getContentPane().add(segundaMaoB);
 
         esconderPrimeiraCarta = cartasDoDealer();
     }
@@ -94,6 +112,15 @@ class Cartas extends Componente {
         return segunda ? segundaMao : primeiraMao;
     }
 
+    private void mostrarMao(boolean segunda) {
+        primeiraMaoB.setVisible(!segunda);
+        segundaMaoB.setVisible(segunda);
+
+        this.segunda = segunda;
+        valorDaMao.setTexto("Valor da Mão: " + (segunda ? valorSegundaMao : valorPrimeiraMao));
+        frame.repaint();
+    }
+
     @Override
     void paint(Graphics2D g) {
         int nCartas = cartas().size();
@@ -115,6 +142,21 @@ class Cartas extends Componente {
     private void onNovaCarta(Evento evento) {
         if (evento.jogador != jogador()) return;
 
+
+        if (!cartasDoDealer() || !esconderPrimeiraCarta) {
+            int valorMao = evento.mestre.caclHand(jogador(), segunda);
+
+            valorDaMao.setVisible(true);
+            valorDaMao.setTexto("Valor da Mão: " + valorMao);
+
+            if (segunda) {
+                valorSegundaMao = valorMao;
+            } else {
+                valorPrimeiraMao = valorMao;
+            }
+        }
+
+
         boolean segunda = (boolean) evento.args[0];
         Integer[] carta = (Integer[]) evento.args[1];
 
@@ -127,6 +169,11 @@ class Cartas extends Componente {
         if (evento.jogador != jogador()) return;
 
         segunda = true;
+        indicacaoMao.setTexto("Segunda mão");
+
+        valorSegundaMao = evento.mestre.caclHand(jogador(), segunda);
+        valorDaMao.setTexto("Valor da Mão: " + valorSegundaMao);
+
         frame.repaint();
     }
 
@@ -143,13 +190,19 @@ class Cartas extends Componente {
         primeiraMao.clear();
         segundaMao.clear();
         frame.repaint();
+        segunda = false;
         esconderPrimeiraCarta = cartasDoDealer();
+        valorDaMao.setTexto("");
+        primeiraMaoB.setVisible(false);
+        segundaMaoB.setVisible(false);
     }
 
     private void onSplit(Evento evento) {
         if (evento.jogador != jogador()) return;
 
-        segundaMao.add(primeiraMao.remove(1));
+        segundaMao.add(0, primeiraMao.remove(1));
+        indicacaoMao.setTexto("Primeira mão");
+
         frame.repaint();
     }
 
@@ -157,6 +210,13 @@ class Cartas extends Componente {
         if (evento.jogador == jogador()) {
             evento.mestre.removeObserver(this);
         }
+    }
+
+    private void onProximoJogador(Evento evento) {
+        if (evento.jogador != -1 && evento.jogador < jogador() || segundaMao.size() == 0) return;
+
+        segundaMaoB.setVisible(true);
+        indicacaoMao.setVisible(false);
     }
 
 }

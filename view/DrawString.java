@@ -8,6 +8,7 @@ class DrawString extends Componente {
 	private String txt;
 	private final Color cor;
 	private final float font;
+	private boolean visible = true;
 
 	public DrawString(Frame frame, int x, int y, String txt) {
 		super(frame);
@@ -44,9 +45,15 @@ class DrawString extends Componente {
 		txt = texto;
 		frame.repaint();
 	}
-	
+
+	public void setVisible(boolean b) {
+		visible = b;
+		frame.repaint();
+	}
+
 	@Override
 	public void paint(Graphics2D g) {
+		if (!visible) return;
 
 		g.setColor(cor);
 		g.setFont(g.getFont().deriveFont(font));
