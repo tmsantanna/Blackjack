@@ -1,3 +1,8 @@
+/*
+Bruno Messeder dos Anjos
+Thiago Melcop Sant’Anna
+ */
+
 package view;
 
 import java.awt.*;
