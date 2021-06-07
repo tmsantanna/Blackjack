@@ -143,6 +143,7 @@ class Cartas extends Componente {
         primeiraMao.clear();
         segundaMao.clear();
         frame.repaint();
+        esconderPrimeiraCarta = cartasDoDealer();
     }
 
     private void onSplit(Evento evento) {

@@ -4,7 +4,7 @@ import java.awt.*;
 
 abstract class Componente {
 
-	protected Frame frame;
+	protected final Frame frame;
 
 	protected Componente(Frame frame) {
 		this.frame = frame;

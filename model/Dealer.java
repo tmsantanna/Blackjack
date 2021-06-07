@@ -2,7 +2,7 @@ package model;
 import java.util.*;
 
 class Dealer {
-	private List<Carta> mesa = new ArrayList<>();//Cartas na mesa
+	private final List<Carta> mesa = new ArrayList<>();//Cartas na mesa
 
 	Dealer() {
 	}
@@ -16,7 +16,6 @@ class Dealer {
 	
 	public void clearMesa(){//clear a mesa de cartas
 		mesa.clear();//Clear
-		return;
 	}
 	
 	public List<Carta> pegaMesa(){

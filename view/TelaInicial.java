@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 class TelaInicial extends Frame {
-	private DrawImagem fundo = new DrawImagem(this, 0, -35, "imagens/inicial.png");
-	private EntradaTexto t1 = new EntradaTexto(366,265,100,30);
-	private EntradaTexto t2 = new EntradaTexto(366,325,100,30);
-	private EntradaTexto t3 = new EntradaTexto(366,385,100,30);
-	private EntradaTexto t4 = new EntradaTexto(366,445,100,30);
+	private final DrawImagem fundo = new DrawImagem(this, 0, -35, "imagens/inicial.png");
+	private final EntradaTexto t1 = new EntradaTexto(366,265,100,30);
+	private final EntradaTexto t2 = new EntradaTexto(366,325,100,30);
+	private final EntradaTexto t3 = new EntradaTexto(366,385,100,30);
+	private final EntradaTexto t4 = new EntradaTexto(366,445,100,30);
 
     TelaInicial(Consumer<List<String>> onNovo, Runnable onLoad) {
     	setTitle("TelaInicial");

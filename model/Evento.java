@@ -28,7 +28,8 @@ public class Evento {
         SPLIT,
         SEGUNDA_MAO,
         CLEAR_CARTAS,
-        BLACKJACK
+        BLACKJACK,
+        FIM_DE_RODADA
     }
 
 }

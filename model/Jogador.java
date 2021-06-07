@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Jogador {
-	String nome;
-	private List<Carta> hand = new ArrayList<>();//Carta que o jogador tem é mão
-	private List<Carta> splitHand = new ArrayList<>();//Carta que o jogador tem é mão
+	private final String nome;
+	private final List<Carta> hand = new ArrayList<>();//Carta que o jogador tem é mão
+	private final List<Carta> splitHand = new ArrayList<>();//Carta que o jogador tem é mão
 	private boolean segunda = false;
 	private boolean flagSplitAs = false;
 	private boolean apostado = false;
@@ -23,7 +23,6 @@ class Jogador {
 		} else {
 			hand.add(novaCarta);
 		}
-		return;
 	}
 
 	void dealCartaMao(Carta novaCarta, boolean segunda) {
@@ -39,14 +38,13 @@ class Jogador {
 		aposta = 0;
 	}
 
-	public int caclHand() {//Calcula o melhor valor da mão considerando o valor do Às
+	int caclHand() {//Calcula o melhor valor da mão considerando o valor do Às
+		return caclHand(segunda);
+	}
+
+	int caclHand(boolean segunda) {//Calcula o melhor valor da mão considerando o valor do Às
 		int resultado = 0, ases = 0;
-		List<Carta> mao;
-		if (segunda) {
-			mao = splitHand;
-		} else {
-			mao = hand;
-		}
+		List<Carta> mao = segunda ? splitHand : hand;
 
 		for (Carta carta : mao) {
 			resultado += carta.pegaValor();//Adiciona o Valor
@@ -64,7 +62,7 @@ class Jogador {
 		return resultado;
 	}
 
-	public void split() {
+	void split() {
 		if (hand.get(0).pegaNum() == 1) {
 			flagarSplitAs(true);
 		}
@@ -74,17 +72,10 @@ class Jogador {
 
 		fichas -= aposta;
 		aposta += aposta;
-
-		return;
 	}
 
-	public void trocaMao() {//Troca para usar a segunda mão
-		if (segunda) {
-			segunda = false;
-		} else {
-			segunda = true;
-		}
-		return;
+	void trocaMao() { //Troca para usar a segunda mão
+		segunda = !segunda;
 	}
 
 	boolean apostar(float valor) {
@@ -96,27 +87,26 @@ class Jogador {
 		return true;
 	}
 
-	boolean dobrarAposta() {
-		if (aposta > fichas || !apostado) return false;
+	void dobrarAposta() {
+		if (aposta > fichas || !apostado) return;
 
 		fichas -= aposta;
 		aposta += aposta;
-
-		return true;
 	}
 
-	boolean diminuirAposta(float valor) {
-		if (valor < 0 || valor > aposta || apostado) return false;
+	void diminuirAposta(float valor) {
+		if (valor < 0 || valor > aposta || apostado) return;
 
 		aposta -= valor;
 		fichas += valor;
-
-		return true;
 	}
 
 	void receber(float valor) {
 		fichas += valor;
-		return;
+	}
+
+	void zerarAposta() {
+		aposta = 0;
 	}
 
 	void deal() {
@@ -164,47 +154,43 @@ class Jogador {
 			return false;
 		}
 
-		if (hand.get(0).pegaValor() != hand.get(1).pegaValor()) {//Verifica se as cartas da mao são iguais
-			return false;
-		}
-
-		return true;
+		//Verifica se as cartas da mao são iguais
+		return hand.get(0).pegaValor() == hand.get(1).pegaValor();
 	}
 
 	boolean podeSurrender() {
 		return hand.size() == 2 && !temDuasMaos();
 	}
 
-	public List<Carta> pegaHand(){
+	List<Carta> pegaHand(){
 		return hand;
 	}
 
-	public void flagarSplitAs(boolean fato) {//Muda o flagSplitAs
+	void flagarSplitAs(boolean fato) {//Muda o flagSplitAs
 		flagSplitAs = fato;
-		return;
 	}
 
-	public String pegaNome() {
+	String pegaNome() {
 		return nome;
 	}
 
-	public float pegaFichas() {
+	float pegaFichas() {
 		return fichas;
 	}
 
-	public float pegaAposta() {
+	float pegaAposta() {
 		return aposta;
 	}
 
-	public boolean pegaSegunda() {
+	boolean pegaSegunda() {
 		return segunda;
 	}
 
-	public boolean pegaFlagSplitAs() {
+	boolean pegaFlagSplitAs() {
 		return flagSplitAs;
 	}
 
-	public boolean temDuasMaos() {
+	boolean temDuasMaos() {
 		return splitHand.size() > 0;
 	}
 

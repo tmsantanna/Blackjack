@@ -2,15 +2,15 @@ package model;
 
 import model.Evento.Tipo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+enum Status { JOGANDO, CLEAR, BLACKJACK, SURRENDER }
 
 public class Mestre extends Observable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
 	private final List<Carta> baralho = new ArrayList<>();//Cartas no baralho
 	private final List<Jogador> jogadores = new ArrayList<>();
 	private final Dealer dealer = new Dealer();
-	private final List<Jogador> blackjack = new ArrayList<>();
+	private final Map<Jogador, Status> status = new HashMap<>();
 	private int vez = 0;
 	private boolean deal = true;
 
@@ -18,7 +18,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		jogadores.add(new Jogador(nome));
 		createBaralho();//Cria o baralho
 		shuffleBaralho();
-		return;
 	}
 
 	public Mestre(String nome, boolean shuffle) {//Vers�o com um nome e opção para shuffle
@@ -27,7 +26,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		if (shuffle) {
 			shuffleBaralho();
 		}
-		return;
 	}
 
 	public Mestre(List<String> nomes) {
@@ -67,20 +65,20 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 	public void addJogador(String nome) {//Adiciona jogador
 		jogadores.add(new Jogador(nome));
-		return;
 	}
 
-	public Jogador removeJogador() {//Remove um jogador da lista
+	public void removeJogador() { //Remove um jogador da lista
 		Jogador jogador = jogadores.get(vez);
 		jogador.clearHand();
-		return jogadores.remove(vez);
+		status.remove(jogador);
+		jogadores.remove(vez);
 	}
 
-	public Jogador removeJogador(int j) {//Remove um jogador da lista
+	public void removeJogador(int j) { //Remove um jogador da lista
 		Jogador jogador = jogadores.get(j);
 		jogador.clearHand();
-		blackjack.remove(jogador);
-		return jogadores.remove(j);
+		status.remove(jogador);
+		jogadores.remove(j);
 	}
 
 	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
@@ -183,40 +181,38 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		}
 	}
 
-	public void comecarRodada() {
+	public boolean comecarRodada() {
+		if (status.values().stream().anyMatch(status -> status != null && status != Status.CLEAR)) {
+			return false;
+		}
+
+		for (Jogador jogador : jogadores) {
+			status.put(jogador, Status.JOGANDO);
+		}
+
 		deal = true;
-		blackjack.clear();
 		vez = 0;
+		dealer.clearMesa();
 
 		createBaralho();
 		shuffleBaralho();
 
 		for (Jogador jogador : jogadores) {
 			jogador.clearHand();
+			notifyObservers(jogadores.indexOf(jogador), Tipo.MUDANCA_NA_APOSTA, 0f, jogador.pegaFichas());
 		}
 
+		notifyObservers(-1, Tipo.CLEAR_CARTAS);
 		notifyObservers(Tipo.PROXIMO_JOGADOR); //Notifica que o primeiro jogador pode fazer a aposta
-	}
 
-	private void terminarRodada() {
-		vez = -1;
-		deal = false;
-
-		notifyObservers(-1, Tipo.PROXIMO_JOGADOR, -1);
-		notifyObservers(Tipo.CLEAR_CARTAS);
-
-		for (Jogador jogador : jogadores) {
-			int indice = jogadores.indexOf(jogador);
-			notifyObservers(indice, Tipo.CLEAR_CARTAS);
-			notifyObservers(indice, Tipo.MUDANCA_NA_APOSTA, 0f, jogador.pegaFichas());
-		}
+		return true;
 	}
 
 	private void proximoJogador() {
 		int ultimoJogador = vez;
 
 		vez++;
-		while (vez < pegaNumJogadores() && blackjack.contains(jogadores.get(vez))) {
+		while (vez < pegaNumJogadores() && status.get(jogadores.get(vez)) != Status.JOGANDO) {
 			vez++;
 		}
 
@@ -236,71 +232,66 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		}
 	}
 
-	public boolean doubleAposta() {//Dobrar a aposta
+	public void doubleAposta() {//Dobrar a aposta
 		Jogador jogador = jogadores.get(vez);
 
-		if (jogador.podeDobrarAposta()) {//Verifica se pode dobrar aposta
-			jogador.dobrarAposta();//Dobra a aposta
-			notifyObservers(Tipo.MUDANCA_NA_APOSTA, jogador.pegaAposta(), jogador.pegaFichas());
+		//Verifica se pode dobrar aposta
+		if (!jogador.podeDobrarAposta()) return;
 
-			dealCarta(jogador);
+		jogador.dobrarAposta();//Dobra a aposta
+		notifyObservers(Tipo.MUDANCA_NA_APOSTA, jogador.pegaAposta(), jogador.pegaFichas());
+
+		dealCarta(jogador);
+
+		if (jogador.caclHand() > 21) {
+			notifyObservers(Tipo.PASSOU_DE_21);
+		}
+
+		stand();
+
+		if (jogador.temDuasMaos()) {
+			dealCartaMao(jogador, true);
 
 			if (jogador.caclHand() > 21) {
 				notifyObservers(Tipo.PASSOU_DE_21);
 			}
 
 			stand();
-
-			if (jogador.temDuasMaos()) {
-				dealCartaMao(jogador, true);
-
-				if (jogador.caclHand() > 21) {
-					notifyObservers(Tipo.PASSOU_DE_21);
-				}
-
-				stand();
-			}
-
-			return true;
-		} else {
-			return false;//Não pode apostar
 		}
 	}
 
 	public void clear(int jogador) {
-		if (podeClear()) {
-			jogadores.get(jogador).clearHand();
-			notifyObservers(jogador, Tipo.CLEAR_CARTAS);
-			notifyObservers(jogador, Tipo.MUDANCA_NA_APOSTA, 0f, jogadores.get(jogador).pegaFichas());
-		}
+		if (!podeClear()) return;
+
+		jogadores.get(jogador).clearHand();
+		status.put(jogadores.get(jogador), Status.CLEAR);
+		notifyObservers(jogador, Tipo.CLEAR_CARTAS);
+		notifyObservers(jogador, Tipo.MUDANCA_NA_APOSTA, 0f, jogadores.get(jogador).pegaFichas());
 	}
 
-	public boolean split() {
+	public void split() {
 		Jogador jogador = jogadores.get(vez);
 
-		if (jogador.podeSplit()) {
+		if (!jogador.podeSplit()) return;
 
-			jogador.split(); //Faz o split
+		jogador.split(); //Faz o split
 
-			dealCartaMao(jogador, false); //Da uma carta para a primeira mão
-			dealCartaMao(jogador, true); //Da uma carta para a segunda mão
+		dealCartaMao(jogador, false); //Da uma carta para a primeira mão
+		dealCartaMao(jogador, true); //Da uma carta para a segunda mão
 
-			notifyObservers(Tipo.MUDANCA_NA_APOSTA, jogador.pegaAposta(), jogador.pegaFichas());
-			notifyObservers(Tipo.SPLIT);
+		notifyObservers(Tipo.MUDANCA_NA_APOSTA, jogador.pegaAposta(), jogador.pegaFichas());
+		notifyObservers(Tipo.SPLIT);
 
-			if (jogador.pegaFlagSplitAs()) { // pula a vez nas duas mãos
-				stand();
-				stand();
-			}
-
-			return true;
-		} else {
-			return false;
+		if (jogador.pegaFlagSplitAs()) { // pula a vez nas duas mãos
+			stand();
+			stand();
 		}
 	}
 
 	public void surrender() {
 		Jogador jogador = jogadores.get(vez);
+
+		status.put(jogador, Status.SURRENDER);
 
 		jogador.receber(jogador.pegaAposta() / 2);//Devolve metade das apostas
 		jogador.clearHand();
@@ -347,33 +338,66 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 		if (valor > 21) {
 			notifyObservers(-1, Tipo.PASSOU_DE_21);
-			//Mesa derrota
 		}
+
+		calcularResultados(false);
+
+		notifyObservers(-1, Tipo.FIM_DE_RODADA);
 	}
 
-	public void checkBlackjack() {//Checa se ocorreu um Blackjack
-		blackjack.clear();
+	private void calcularResultados(boolean blackjackDealer) {
+		for (Jogador jogador : jogadores) {
+			if (status.get(jogador) != Status.SURRENDER) {
+				boolean blackjack = status.get(jogador) == Status.BLACKJACK;
+				float multiplicador = multiplicadorAposta(blackjackDealer, blackjack, jogador.caclHand(false));
+				jogador.receber(multiplicador * jogador.pegaAposta());
 
+				if (jogador.temDuasMaos()) {
+					multiplicador = multiplicadorAposta(blackjackDealer, blackjack, jogador.caclHand(true));
+					jogador.receber(multiplicador * jogador.pegaAposta());
+				}
+			}
+
+			jogador.zerarAposta();
+			notifyObservers(jogadores.indexOf(jogador), Tipo.MUDANCA_NA_APOSTA, 0f, jogador.pegaFichas());
+		}
+
+	}
+
+	private float multiplicadorAposta(boolean blackjackDealer, boolean blackjackJogador, int maoJogador) {
+		int resultadoDealer = dealer.caclMesa() <= 21 ? dealer.caclMesa() : -1;
+		int resultadoJogador = maoJogador <= 21 ? maoJogador : -1;
+
+		if (blackjackDealer) {
+			return blackjackJogador ? 2 : 0;
+		} else if (blackjackJogador) {
+			return 2.5f;
+		} else if (resultadoJogador > 0 && resultadoJogador >= resultadoDealer) {
+			return 2;
+		}
+		return 0;
+	}
+
+	public void checkBlackjack() { //Checa se ocorreu um Blackjack
 		for (int index = 0; index < jogadores.size(); index++) {
 			Jogador jogador = jogadores.get(index);
 
-			if (jogador.caclHand() == 21) {//Se o jogador tem 21
-				blackjack.add(jogador);
+			if (jogador.caclHand() == 21) { //Se o jogador tem 21
+				status.put(jogador, Status.BLACKJACK);
 				notifyObservers(index, Tipo.BLACKJACK);
+
+				if (vez == 0) proximoJogador();
 			}
 		}
 
 		if (dealer.caclMesa() == 21) {
-			//vitoria jogadores / Dealer
 			vez = -1;
 			notifyObservers(Tipo.MOSTRAR_CARTAS);
 			notifyObservers(Tipo.BLACKJACK);
 			notifyObservers(Tipo.PROXIMO_JOGADOR);
+			notifyObservers(Tipo.FIM_DE_RODADA);
+			calcularResultados(true);
 		}
-	}
-
-	public void checkFinal() {//Check final, depois do dealer pegar todas a pecas que precisava
-		//Check Final
 	}
 
 	public List<Jogador> pegaJogadores() {//Pega os jogadores
@@ -393,7 +417,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	public boolean podeJogar(int jogador) {
-		return !deal && jogador == vez && !blackjack.contains(jogadores.get(jogador));
+		return !deal && jogador == vez && status.get(jogadores.get(jogador)) == Status.JOGANDO;
 	}
 
 	public boolean podeApostar(int jogador) {
@@ -474,4 +498,5 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	private void notifyObservers(Tipo tipo, Object... args) {
 		notifyObservers(vez, tipo, args);
 	}
+
 }

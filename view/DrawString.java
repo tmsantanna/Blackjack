@@ -4,11 +4,11 @@ import java.awt.*;
 
 
 class DrawString extends Componente {
-	private int x,y;
+	private final int x, y;
 	private String txt;
-	private Color cor;
-	private float font;
-	
+	private final Color cor;
+	private final float font;
+
 	public DrawString(Frame frame, int x, int y, String txt) {
 		super(frame);
 		this.x = x;
@@ -26,7 +26,7 @@ class DrawString extends Componente {
 		this.cor = color;
 		this.font = 20f;
 	}
-	
+
 	public DrawString(Frame frame, int x, int y, String txt,Color color, float font) {
 		super(frame);
 		this.x = x;

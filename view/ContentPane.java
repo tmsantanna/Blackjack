@@ -9,14 +9,13 @@ class ContentPane extends JPanel {
 
 	private final List<Componente> componentes = new ArrayList<>();
 
-	boolean add(Componente c) {
-		if (componentes.contains(c)) return false;
+	void add(Componente c) {
+		if (componentes.contains(c)) return;
 
 		EventQueue.invokeLater(() -> {
 			componentes.add(c);
 			repaint();
 		});
-		return true;
 	}
 
 	@Override

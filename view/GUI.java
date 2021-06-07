@@ -19,9 +19,9 @@ public class GUI {
 
 	private GUI() {}
 
-	public static void mostraDealer(Mestre mestre) {
+	public static void mostraDealer(Mestre mestre, Runnable onNovaRodada) {
 		if (dealer == null) {
-			dealer = new Dealer(mestre);
+			dealer = new Dealer(mestre, onNovaRodada);
 
 			Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
 			int x = (tela.width - GUI.LARGURA) / 2;

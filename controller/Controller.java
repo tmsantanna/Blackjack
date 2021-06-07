@@ -31,7 +31,7 @@ public class Controller {
         mestre.addObserver(null, Controller::onProximoJogador, Evento.Tipo.PROXIMO_JOGADOR);
         mestre.addObserver(null, Controller::onBlackjack, Evento.Tipo.BLACKJACK);
 
-        GUI.mostraDealer(mestre);
+        GUI.mostraDealer(mestre, Controller::onNovaRodada);
         GUI.mostraJogadores(mestre, nomes, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
                 Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
 
@@ -102,6 +102,8 @@ public class Controller {
     }
 
     private static void onPassouDe21(Evento evento) {
+        if (mestre.pegaNumJogadores() == 0) return;
+
         int jogador = mestre.pegaVez();
 
         if (jogador == -1) {
@@ -136,6 +138,12 @@ public class Controller {
         String nome = mestre.pegaNome(evento.jogador);
 
         JOptionPane.showMessageDialog(null, nome + " tem um blackjack!");
+    }
+
+    private static void onNovaRodada() {
+        if (!mestre.comecarRodada()) {
+            JOptionPane.showMessageDialog(null, "Todos os jogadores devem dar CLEAR ou QUIT!");
+        }
     }
 
 }
