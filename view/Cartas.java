@@ -183,9 +183,12 @@ class Cartas extends Componente {
     }
 
     private void onMostrarCartas(Evento evento) {
-        if (evento.jogador != jogador()) return;
+        if (evento.jogador != -1) return;
 
         esconderPrimeiraCarta = false;
+        valorDaMao.setVisible(true);
+        int valorMao = evento.mestre.caclHand(jogador(), false);
+        valorDaMao.setTexto("Valor da Mão: " + valorMao);
         frame.repaint();
     }
 
