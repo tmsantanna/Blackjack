@@ -11,7 +11,7 @@ public  class TestDealer {
 	 */
 	@Test
 	public void testDealCarta() {
-		Dealer dealer = new Dealer();
+		Dealer dealer = new Dealer(null);
 		Carta carta = new Carta(1,1,0);
 		Carta carta2 = new Carta(13,1,0);
 
@@ -38,7 +38,7 @@ public  class TestDealer {
 	 */
 	@Test
 	public void testClearMesa() {
-		Dealer dealer = new Dealer();
+		Dealer dealer = new Dealer(null);
 		Carta c1 = new Carta(1,1,1);
 		Carta c2 = new Carta(1,1,1);
 
@@ -57,7 +57,7 @@ public  class TestDealer {
 	 */
 	@Test
 	public void testCaclMesa() {
-		Dealer dealer = new Dealer();
+		Dealer dealer = new Dealer(null);
 		Carta c1 = new Carta(1,1,0);
 		Carta c2 = new Carta(13,1,0);
 		Carta c3;

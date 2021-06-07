@@ -7,7 +7,7 @@ import java.util.*;
 public class Mestre extends Observable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
 	private final List<Carta> baralho = new ArrayList<>();//Cartas no baralho
 	private final List<Jogador> jogadores = new ArrayList<>();
-	private final Dealer dealer = new Dealer();
+	private final Dealer dealer = new Dealer(this);
 	private final Map<Jogador, Status> status = new HashMap<>();
 	private int vez = 0;
 	private boolean deal = true;
@@ -320,21 +320,13 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		}
 	}
 
-	public void dealerTurn() {//Depois fazer AI do Dealer
+	public void dealerTurn() {
 		notifyObservers(-1, Tipo.MOSTRAR_CARTAS);
 
 		dealer.pegaMesa().get(0).flip();
+		dealer.jogar();
 
-		int valor;
-
-		valor = dealer.caclMesa();
-
-		while (valor < 17) {
-			dealMesaCarta();
-			valor = dealer.caclMesa();
-		}
-
-		if (valor > 21) {
+		if (dealer.caclMesa() > 21) {
 			notifyObservers(-1, Tipo.PASSOU_DE_21);
 		}
 
@@ -362,7 +354,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 	}
 
-	private float multiplicadorAposta(boolean blackjackDealer, boolean blackjackJogador, int maoJogador) {
+	float multiplicadorAposta(boolean blackjackDealer, boolean blackjackJogador, int maoJogador) {
 		int resultadoDealer = dealer.caclMesa() <= 21 ? dealer.caclMesa() : -1;
 		int resultadoJogador = maoJogador <= 21 ? maoJogador : -1;
 
@@ -374,6 +366,11 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 			return 2;
 		}
 		return 0;
+	}
+
+	float multiplicadorAposta(boolean blackjackDealer, int jogador, boolean segunda) {
+		int valorMao = jogadores.get(jogador).caclHand(segunda);
+		return multiplicadorAposta(blackjackDealer, status.get(jogadores.get(jogador)) == Status.BLACKJACK, valorMao);
 	}
 
 	public void checkBlackjack() { //Checa se ocorreu um Blackjack

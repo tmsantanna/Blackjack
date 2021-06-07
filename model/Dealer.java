@@ -3,8 +3,10 @@ import java.util.*;
 
 class Dealer {
 	private final List<Carta> mesa = new ArrayList<>();//Cartas na mesa
+	private final Mestre mestre;
 
-	Dealer() {
+	Dealer(Mestre mestre) {
+		this.mestre = mestre;
 	}
 	
 	void dealCarta(Carta novaCarta, boolean visible) {//Adiciona cartas a mesa
@@ -14,15 +16,15 @@ class Dealer {
 		mesa.add(novaCarta);
 	}
 	
-	public void clearMesa(){//clear a mesa de cartas
+	void clearMesa(){//clear a mesa de cartas
 		mesa.clear();//Clear
 	}
 	
-	public List<Carta> pegaMesa(){
+	List<Carta> pegaMesa(){
 		return mesa;
 	}
 
-	public int caclMesa() {//Calcula o melhor valor da mesa considerando o valor do Às
+	int caclMesa() {//Calcula o melhor valor da mesa considerando o valor do Às
 		int resultado = 0, ases = 0;
 
 		for (Carta carta : mesa) {
@@ -40,6 +42,50 @@ class Dealer {
 		}
 
 		return resultado;
+	}
+
+	void jogar() {
+		while (continuarJogando()) {
+			mestre.dealMesaCarta();
+		}
+	}
+
+	private boolean continuarJogando() {
+		if (caclMesa() < 17) return true;
+		else if (caclMesa() >= 21) return false;
+
+		float lucroTotal = 0;
+
+		for (int i = 0; i < mestre.pegaNumJogadores(); i++) {
+			lucroTotal += lucroJogador(i);
+		}
+
+		// Para de jogar caso esteja no lucro ou dependendo da chance de quebrar
+		return lucroTotal < 0 && Math.random() >= chanceDeQuebrar();
+	}
+
+	private float lucroJogador(int jogador) {
+		float multiplicador = 1 - mestre.multiplicadorAposta(false, jogador, false);
+
+		if (mestre.temDuasMaos(jogador)) {
+			multiplicador += 1 - mestre.multiplicadorAposta(false, jogador, true);
+		}
+
+		return multiplicador * mestre.pegaJogadores().get(jogador).pegaAposta();
+	}
+
+	private double chanceDeQuebrar() {
+		int faltaPara21 = 21;
+
+		for (Carta carta : mesa) {
+			faltaPara21 -= carta.pegaValor();
+		}
+
+		if (faltaPara21 < 10) {
+			return (double) (13 - faltaPara21) / 13;
+		}
+
+		return 0;
 	}
 
 }
