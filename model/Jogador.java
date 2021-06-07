@@ -12,8 +12,8 @@ class Jogador {
 	private final String nome;
 	private final List<Carta> hand = new ArrayList<>();//Carta que o jogador tem é mão
 	private final List<Carta> splitHand = new ArrayList<>();//Carta que o jogador tem é mão
-	private boolean segunda = false;
-	private boolean flagSplitAs = false;
+	private boolean segunda = false; // Indica se o jogador está usando a segunda mão
+	private boolean flagSplitAs = false; // Indica se houve um split de Ases
 	private boolean apostado = false;
 	private float fichas = 500;
 	private float aposta = 0;
@@ -48,22 +48,24 @@ class Jogador {
 	}
 
 	int caclHand(boolean segunda) {//Calcula o melhor valor da mão considerando o valor do Às
-		int resultado = 0, ases = 0;
+		int resultado = 0;
+		boolean temAs = false;
+
 		List<Carta> mao = segunda ? splitHand : hand;
 
 		for (Carta carta : mao) {
 			resultado += carta.pegaValor();//Adiciona o Valor
 
 			if (carta.pegaValor() == 1) {
-				ases++;//Conta Ases
+				temAs = true;
 			}
 		}
 
-		if (ases > 0) {
-			if (resultado + 10 <= 21) {
-				resultado += 10;
-			}
+		//Caso tenha um Às e ele pode valer 11
+		if (temAs && resultado + 10 <= 21) {
+			resultado += 10;
 		}
+
 		return resultado;
 	}
 

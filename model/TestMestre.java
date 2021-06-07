@@ -124,18 +124,4 @@ public class TestMestre {
 		assertTrue(m1.pegaJogadores().get(1).pegaHand().isEmpty());
 		assertTrue(m1.pegaDealer().pegaMesa().isEmpty());
 	}
-
-	/**
-	 * Testa se a vez é passada para o próximo jogador ao dar stand
-	 */
-	@Test
-	public void testStand() {
-		Mestre m1 = new Mestre("1811526");
-		
-		m1.addJogador("19010446");
-		
-		assertEquals(0,m1.pegaVez());
-		m1.stand();
-		assertEquals(1,m1.pegaVez());
-	}
 }

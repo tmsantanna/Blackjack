@@ -148,7 +148,8 @@ class Fichas extends Componente {
     private static BufferedImage grayScale(BufferedImage img) {
         BufferedImage grayScale = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         grayScale.getGraphics().drawImage(img, 0, 0, null);
-        return grayScale;
+
+        return darker(grayScale);
     }
 
     private static BufferedImage darker(BufferedImage img) {

@@ -13,7 +13,7 @@ public class Evento {
 
     public final Tipo tipo;
 
-    public final Object[] args;
+    public final Object[] args; // parâmetros adicionais
 
     Evento(Mestre mestre, int jogador, Tipo tipo, Object... args) {
         this.mestre = mestre;

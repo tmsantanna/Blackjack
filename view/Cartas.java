@@ -29,9 +29,8 @@ class Cartas extends Componente {
     private boolean segunda = false;
 
     private final DrawString valorDaMao = new DrawString(frame, 370, 480, "Valor da Mão: 0", Color.WHITE);
-    private final DrawString indicacaoMao = new DrawString(frame, 30, 544, "", Color.white);
-    private final Botao primeiraMaoB;
-    private final Botao segundaMaoB;
+    private final DrawString indicacaoMao = new DrawString(frame, 30, 544, "", Color.white); //Indica se é a primeira ou segunda mão
+    private final Botao primeiraMaoB, segundaMaoB; //Botões para trocar de mão
 
     private static final int LARGURA_CARTA = 73;
     private static final int ALTURA_CARTA = 97;

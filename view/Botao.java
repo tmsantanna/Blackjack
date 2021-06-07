@@ -61,6 +61,9 @@ class Botao extends JButton {
 	}
 
 	private static BufferedImage criaImagem(String texto, int tamanhoFonte) {
+		//Cira a imagem do botão a partir do texto que vai aparecer
+		//Estica a imagem para caber o texto
+
 		Font fonte =  new Font("Calibri", Font.BOLD, tamanhoFonte);
 
 		Graphics2D graphics = (Graphics2D) imagemFundo.getGraphics();
@@ -88,6 +91,8 @@ class Botao extends JButton {
 	}
 
 	private static BufferedImage darker(BufferedImage img) {
+		//Escurece uma imagem
+
 		BufferedImage darker = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 
 		for (int y = 0; y < img.getHeight(); y++) {

@@ -9,39 +9,13 @@ import model.Evento.Tipo;
 
 import java.util.*;
 
-class Observers {
-
-    final Object parent;
-    private final List<Observer> observers = new ArrayList<>();
-    private final List<List<Tipo>> tipos = new ArrayList<>();
-
-    Observers(Object parent, Observer observer, Tipo[] tipos) {
-        this.parent = parent;
-        addObserver(observer, tipos);
-    }
-
-    void addObserver(Observer observer, Tipo[] tipos) {
-        observers.add(observer);
-        this.tipos.add(Arrays.asList(tipos));
-    }
-
-    void update(Evento evento) {
-        for (int index = 0; index < observers.size(); index++) {
-            if (tipos.get(index).contains(evento.tipo)) {
-                observers.get(index).update(evento);
-            }
-        }
-    }
-
-}
-
 public abstract class Observable {
 
     private final List<Observers> observers = new ArrayList<>();
 
-    private final List<Object> removeQueue = new ArrayList<>();
+    private final List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
 
-    protected final List<Evento> eventHistory = new ArrayList<>();
+    protected final List<Evento> eventHistory = new ArrayList<>();  //histórico de eventos, em caso de load
 
     private boolean notifying = false;
 
@@ -91,6 +65,33 @@ public abstract class Observable {
     private void removeObserverQueue() {
         observers.removeIf(observer -> removeQueue.contains(observer.parent));
         removeQueue.clear();
+    }
+
+    //Guarda vários observers com um objeto pai
+    private static class Observers {
+
+        final Object parent;
+        private final List<Observer> observers = new ArrayList<>();
+        private final List<List<Tipo>> tipos = new ArrayList<>();
+
+        Observers(Object parent, Observer observer, Tipo[] tipos) {
+            this.parent = parent;
+            addObserver(observer, tipos);
+        }
+
+        void addObserver(Observer observer, Tipo[] tipos) {
+            observers.add(observer);
+            this.tipos.add(Arrays.asList(tipos));
+        }
+
+        void update(Evento evento) {
+            for (int index = 0; index < observers.size(); index++) {
+                if (tipos.get(index).contains(evento.tipo)) {
+                    observers.get(index).update(evento);
+                }
+            }
+        }
+
     }
 
 }

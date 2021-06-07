@@ -18,6 +18,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	private int vez = 0;
 	private boolean deal = true;
 
+	//Caminho para os saves
 	public static final String SAVE_PATH = Paths.get(System.getenv("appdata"), ".Blackjack").toString();
 
 	public Mestre(String nome) {//Vers�o com um nome
@@ -188,8 +189,11 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	public boolean comecarRodada() {
-		if (status.values().stream().anyMatch(status -> status != null && status != Status.CLEAR)) {
-			return false;
+		//Caso algum jogador não tenha dado clear, não inicia a rodada
+		for (Status value : status.values()) {
+			if (value != Status.CLEAR) {
+				return false;
+			}
 		}
 
 		for (Jogador jogador : jogadores) {
@@ -344,6 +348,8 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	private void calcularResultados(boolean blackjackDealer) {
+		//Calcula quanto cada jogador ganhou ou perdeu
+
 		for (Jogador jogador : jogadores) {
 			if (status.get(jogador) != Status.SURRENDER) {
 				boolean blackjack = status.get(jogador) == Status.BLACKJACK;
@@ -359,10 +365,11 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 			jogador.zerarAposta();
 			notifyObservers(jogadores.indexOf(jogador), Tipo.MUDANCA_NA_APOSTA, 0f, jogador.pegaFichas());
 		}
-
 	}
 
 	float multiplicadorAposta(boolean blackjackDealer, boolean blackjackJogador, int maoJogador) {
+		//multiplicador da aposta de um jogador
+
 		int resultadoDealer = dealer.caclMesa() <= 21 ? dealer.caclMesa() : -1;
 		int resultadoJogador = maoJogador <= 21 ? maoJogador : -1;
 
@@ -404,7 +411,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	public void revalidar() {
-		//Notifica todos os eventos novamente
+		//Notifica todos os eventos novamente, em caso de load
 		notifyObservers(-1, Tipo.REVALIDANDO);
 		for (Evento evento : eventHistory) {
 			if (evento.tipo != Tipo.BLACKJACK) {

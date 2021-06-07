@@ -25,7 +25,7 @@ public class Controller {
     }
 
     public static void comecarJogo() {
-        GUI.mostraTelaInicial(controller::novoJogo, controller::carregarJogo);
+        GUI.mostraTelaInicial(controller::novoJogo, controller::onLoad);
     }
 
     private void novoJogo(List<String> nomes) {
@@ -41,7 +41,7 @@ public class Controller {
         mestre.comecarRodada();
     }
 
-    private void carregarJogo(Mestre mestre) {
+    private void onLoad(Mestre mestre) {
         carregarPatida(mestre);
         mestre.revalidar();
     }
@@ -169,7 +169,10 @@ public class Controller {
 
         if (nome == null) return;
 
-        String arquivo = new File(Mestre.SAVE_PATH, nome + ".bjk").toString();
+        File root = new File(Mestre.SAVE_PATH);
+        root.mkdirs();
+
+        String arquivo = new File(root, nome + ".bjk").toString();
 
         //TODO salvar arquivo
 

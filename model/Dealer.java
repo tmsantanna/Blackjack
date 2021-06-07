@@ -31,20 +31,20 @@ class Dealer {
 	}
 
 	int caclMesa() {//Calcula o melhor valor da mesa considerando o valor do Às
-		int resultado = 0, ases = 0;
+		int resultado = 0;
+		boolean temAs = false;
 
 		for (Carta carta : mesa) {
 			resultado += carta.pegaValor();//Adiciona o Valor
 
 			if (carta.pegaValor() == 1) {
-				ases++;//Conta Ases
+				temAs = true;
 			}
 		}
 
-		if (ases>0) {
-			if (resultado + 10 <= 21) {
-				resultado += 10;
-			}
+		//Caso tenha um Às e ele pode valer 11
+		if (temAs && resultado + 10 <= 21) {
+			resultado += 10;
 		}
 
 		return resultado;
@@ -71,6 +71,8 @@ class Dealer {
 	}
 
 	private float lucroJogador(int jogador) {
+		//Lucro do dealer em cima do jogador
+
 		float multiplicador = -mestre.multiplicadorAposta(false, jogador, false);
 
 		if (mestre.temDuasMaos(jogador)) {
@@ -91,7 +93,7 @@ class Dealer {
 			return (double) (13 - faltaPara21) / 13;
 		}
 
-		return 0;
+		return 0; //Caso falte mais de 10, não tem chance de quebrar
 	}
 
 }
