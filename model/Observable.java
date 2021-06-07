@@ -41,6 +41,8 @@ public abstract class Observable {
 
     private final List<Object> removeQueue = new ArrayList<>();
 
+    protected final List<Evento> eventHistory = new ArrayList<>();
+
     private boolean notifying = false;
 
     public void addObserver(Object parent, Observer observer, Tipo... tipos) {
@@ -62,8 +64,20 @@ public abstract class Observable {
         }
     }
 
-    protected void notifyObservers(Evento evento) {
+    public void removeObservers() {
+        removeQueue.addAll(observers);
+
+        if (!notifying) {
+            removeObserverQueue();
+        }
+    }
+
+    protected void notifyObservers(Evento evento, boolean salvarEvento) {
         notifying = true;
+
+        if (salvarEvento) {
+            eventHistory.add(evento);
+        }
 
         for (Observers observers : observers) {
             observers.update(evento);

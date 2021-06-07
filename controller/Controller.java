@@ -17,6 +17,8 @@ public class Controller {
 
     private static Mestre mestre;
 
+    private static boolean revalidando = false;
+
     private Controller() {
     }
 
@@ -33,25 +35,27 @@ public class Controller {
         GUI.escondeTelaInicial();
 
         mestre = new Mestre(nomes);
-        mestre.addObserver(null, Controller::onPassouDe21, Evento.Tipo.PASSOU_DE_21);
-        mestre.addObserver(null, Controller::onProximoJogador, Evento.Tipo.PROXIMO_JOGADOR);
-        mestre.addObserver(null, Controller::onBlackjack, Evento.Tipo.BLACKJACK);
-
-        GUI.mostraDealer(mestre, Controller::onSave, Controller::onNovaRodada);
-        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
-                Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
-
+        carregarPatida(mestre);
         mestre.comecarRodada();
     }
 
     private static void carregarJogo(Mestre mestre) {
+        carregarPatida(mestre);
+        mestre.revalidar();
+    }
+
+    private static void carregarPatida(Mestre mestre) {
         Controller.mestre = mestre;
+        mestre.removeObservers();
+
+        mestre.addObserver(null, Controller::onPassouDe21, Evento.Tipo.PASSOU_DE_21);
+        mestre.addObserver(null, Controller::onProximoJogador, Evento.Tipo.PROXIMO_JOGADOR);
+        mestre.addObserver(null, Controller::onBlackjack, Evento.Tipo.BLACKJACK);
+        mestre.addObserver(null, Controller::onRevalidate, Evento.Tipo.REVALIDADO, Evento.Tipo.REVALIDANDO);
 
         GUI.mostraDealer(mestre, Controller::onSave, Controller::onNovaRodada);
         GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
                 Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
-
-        mestre.revalidar();
     }
 
     private static void onDouble(int jogador) {
@@ -119,18 +123,18 @@ public class Controller {
         int jogador = mestre.pegaVez();
 
         if (jogador == -1) {
-            JOptionPane.showMessageDialog(null, "Dealer passou de 21!");
+            mostrarMensagem("Dealer passou de 21!");
             return;
         }
 
         String mensagem = "Jogador " + mestre.pegaNome(jogador) + " passou de 21";
 
         if (!mestre.temDuasMaos(jogador)) {
-            JOptionPane.showMessageDialog(null, mensagem + "!");
+            mostrarMensagem(mensagem + "!");
         } else if (mestre.pegaSegunda(jogador)) {
-            JOptionPane.showMessageDialog(null, mensagem + " na segunda mão!");
+            mostrarMensagem(mensagem + " na segunda mão!");
         } else {
-            JOptionPane.showMessageDialog(null, mensagem + " na primeira mão!");
+            mostrarMensagem(mensagem + " na primeira mão!");
         }
     }
 
@@ -140,7 +144,7 @@ public class Controller {
         int jogador = (int) evento.args[0];
 
         if (mestre.pegaNumJogadores() > 1 || jogador == -1) {
-            JOptionPane.showMessageDialog(null, "Vez de " + mestre.pegaNome(jogador));
+            mostrarMensagem("Vez de " + mestre.pegaNome(jogador));
         }
 
         GUI.focarJanela(jogador);
@@ -149,12 +153,12 @@ public class Controller {
     private static void onBlackjack(Evento evento) {
         String nome = mestre.pegaNome(evento.jogador);
 
-        JOptionPane.showMessageDialog(null, nome + " tem um blackjack!");
+        mostrarMensagem(nome + " tem um blackjack!");
     }
 
     private static void onNovaRodada() {
         if (!mestre.comecarRodada()) {
-            JOptionPane.showMessageDialog(null, "Todos os jogadores devem dar CLEAR ou QUIT!");
+            mostrarMensagem("Todos os jogadores devem dar CLEAR ou QUIT!");
         }
     }
 
@@ -167,7 +171,11 @@ public class Controller {
 
         //TODO salvar arquivo
 
-        JOptionPane.showMessageDialog(null, "Jogo salvo!");
+        mostrarMensagem("Jogo salvo!");
+    }
+
+    private static void onRevalidate(Evento evento) {
+        revalidando = evento.tipo == Evento.Tipo.REVALIDANDO;
     }
 
     private static String escolheNomeArquivo() {
@@ -191,6 +199,12 @@ public class Controller {
         } while (new File(Mestre.SAVE_PATH, nome + ".bj").exists() || nome.trim().isEmpty());
 
         return nome;
+    }
+
+    private static void mostrarMensagem(String mensagem) {
+        if (revalidando) return;
+
+        JOptionPane.showMessageDialog(null, mensagem);
     }
 
 }

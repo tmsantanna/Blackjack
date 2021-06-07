@@ -404,7 +404,14 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	public void revalidar() {
-
+		//Notifica todos os eventos novamente
+		notifyObservers(-1, Tipo.REVALIDANDO);
+		for (Evento evento : eventHistory) {
+			if (evento.tipo != Tipo.BLACKJACK) {
+				notifyObservers(evento, false);
+			}
+		}
+		notifyObservers(-1, Tipo.REVALIDADO);
 	}
 
 	public List<Jogador> pegaJogadores() {//Pega os jogadores
@@ -505,7 +512,7 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	}
 
 	private void notifyObservers(int jogador, Tipo tipo, Object... args) {
-		notifyObservers(new Evento(this, jogador, tipo, args));
+		notifyObservers(new Evento(this, jogador, tipo, args), true);
 	}
 
 	private void notifyObservers(Tipo tipo, Object... args) {

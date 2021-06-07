@@ -96,6 +96,10 @@ public class GUI {
 		telaInicial.setVisible(false);
 	}
 
+	public static void escondeTelaLoad() {
+		telaLoad.setVisible(false);
+	}
+
 	public static void mostraLoad(Consumer<Mestre> onLoad, Runnable onCancel) {
 		if (telaLoad == null) {
 			telaLoad = new TelaLoad(onLoad, onCancel);

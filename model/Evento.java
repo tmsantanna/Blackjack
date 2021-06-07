@@ -34,7 +34,9 @@ public class Evento {
         SEGUNDA_MAO,
         CLEAR_CARTAS,
         BLACKJACK,
-        FIM_DE_RODADA
+        FIM_DE_RODADA,
+        REVALIDANDO,
+        REVALIDADO
     }
 
 }
