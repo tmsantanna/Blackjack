@@ -20,7 +20,7 @@ class Dealer extends Frame {
 
         new Cartas(this, mestre);
 
-        Botao terminarJogo = new Botao("TERMINAR JOGO", 50, 600, () -> System.exit(-1));
+        Botao terminarJogo = new Botao("TERMINAR JOGO", 50, 600, () -> GUI.mostraTelaInicial(null, null));
         Botao salvarJogo = new Botao("SALVAR JOGO", 694, 600, onSave);
 
         novaRodada = new Botao("NOVA RODADA", 363, 600, onNovaRodada);

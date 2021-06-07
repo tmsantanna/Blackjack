@@ -45,6 +45,10 @@ class TelaInicial extends Frame {
 
 		nomes.removeIf(String::isEmpty);
 
+		t1.setText("");
+		t2.setText("");
+		t3.setText("");
+		t4.setText("");
 		return nomes;
     }
 

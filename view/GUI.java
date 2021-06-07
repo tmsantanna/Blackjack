@@ -26,14 +26,14 @@ public class GUI {
 	private GUI() {}
 
 	public static void mostraDealer(Mestre mestre, Runnable onSave, Runnable onNovaRodada) {
-		if (dealer == null) {
-			dealer = new Dealer(mestre, onSave, onNovaRodada);
+		if (dealer != null) dealer.dispose();
 
-			Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
-			int x = (tela.width - GUI.LARGURA) / 2;
+		dealer = new Dealer(mestre, onSave, onNovaRodada);
 
-			dealer.setLocation(x, 0);
-		}
+		Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (tela.width - GUI.LARGURA) / 2;
+
+		dealer.setLocation(x, 0);
 		dealer.setVisible(true);
 	}
 
@@ -46,13 +46,17 @@ public class GUI {
 									   Consumer<Integer> onStand,
 									   Consumer<Integer> onSurrender,
 									   Consumer<Integer> onQuit,
-									   BiConsumer<Integer, Integer> apostar){
-		if (jogadores == null) {
-			jogadores = new ArrayList<>();
-			for (int i = 0; i < mestre.pegaNumJogadores(); i++) {
-				jogadores.add(new Jogador(mestre, i, onDouble, onSplit, onClear,
-						onDeal, onHit, onStand, onSurrender, onQuit, apostar));
+									   BiConsumer<Integer, Integer> apostar) {
+		if (jogadores != null) {
+			for (Jogador jogador : jogadores) {
+				jogador.dispose();
 			}
+		}
+
+		jogadores = new ArrayList<>();
+		for (int i = 0; i < mestre.pegaNumJogadores(); i++) {
+			jogadores.add(new Jogador(mestre, i, onDouble, onSplit, onClear,
+					onDeal, onHit, onStand, onSurrender, onQuit, apostar));
 		}
 
 		Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
@@ -86,6 +90,16 @@ public class GUI {
 		}
 
 		telaInicial.setVisible(true);
+
+		if (jogadores != null) {
+			for (Jogador jogador : jogadores) {
+				jogador.setVisible(false);
+			}
+		}
+
+		if (dealer != null) {
+			dealer.setVisible(false);
+		}
 
 		if (telaLoad != null) {
 			telaLoad.setVisible(false);
