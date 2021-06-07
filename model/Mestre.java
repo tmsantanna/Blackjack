@@ -367,13 +367,13 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 		int resultadoJogador = maoJogador <= 21 ? maoJogador : -1;
 
 		if (blackjackDealer) {
-			return blackjackJogador ? 2 : 0;
+			return blackjackJogador ? 1 : -1;
 		} else if (blackjackJogador) {
-			return 2.5f;
+			return 1.5f;
 		} else if (resultadoJogador > 0 && resultadoJogador >= resultadoDealer) {
-			return 2;
+			return 1;
 		}
-		return 0;
+		return -1;
 	}
 
 	float multiplicadorAposta(boolean blackjackDealer, int jogador, boolean segunda) {

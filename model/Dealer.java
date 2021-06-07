@@ -71,10 +71,10 @@ class Dealer {
 	}
 
 	private float lucroJogador(int jogador) {
-		float multiplicador = 1 - mestre.multiplicadorAposta(false, jogador, false);
+		float multiplicador = -mestre.multiplicadorAposta(false, jogador, false);
 
 		if (mestre.temDuasMaos(jogador)) {
-			multiplicador += 1 - mestre.multiplicadorAposta(false, jogador, true);
+			multiplicador -= mestre.multiplicadorAposta(false, jogador, true);
 		}
 
 		return multiplicador * mestre.pegaJogadores().get(jogador).pegaAposta();

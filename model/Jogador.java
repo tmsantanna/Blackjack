@@ -75,7 +75,6 @@ class Jogador {
 		splitHand.add(hand.get(1));//Adiciona a carta para split Hand
 		hand.remove(1);//Remove a carta da mão adicional
 
-		fichas -= aposta;
 		aposta += aposta;
 	}
 
@@ -84,26 +83,23 @@ class Jogador {
 	}
 
 	boolean apostar(float valor) {
-		if (valor < 0 || valor > fichas || apostado) return false;
+		if (valor < 0 || valor + aposta > fichas || apostado) return false;
 
 		aposta += valor;
-		fichas -= valor;
 
 		return true;
 	}
 
 	void dobrarAposta() {
-		if (aposta > fichas || !apostado) return;
+		if (2 * aposta > fichas || !apostado) return;
 
-		fichas -= aposta;
-		aposta += aposta;
+		aposta *= 2;
 	}
 
 	void diminuirAposta(float valor) {
 		if (valor < 0 || valor > aposta || apostado) return;
 
 		aposta -= valor;
-		fichas += valor;
 	}
 
 	void receber(float valor) {
@@ -135,7 +131,7 @@ class Jogador {
 	}
 
 	boolean podeApostar(float valor) {
-		return !apostado && valor >= 0 && valor <= fichas && valor + aposta <= 100;
+		return !apostado && valor >= 0 && valor + aposta <= fichas && valor + aposta <= 100;
 	}
 
 	boolean podeDiminuirAposta(int valor) {
@@ -143,7 +139,7 @@ class Jogador {
 	}
 
 	boolean podeDobrarAposta() {
-		return aposta <= 50 && aposta <= fichas && hand.size() == 2 && !segunda;
+		return aposta <= 50 && 2 * aposta <= fichas && hand.size() == 2 && !segunda;
 	}
 
 	boolean podeSplit() {
@@ -155,7 +151,7 @@ class Jogador {
 			return false;
 		}
 
-		if (aposta > fichas || aposta > 50) {//Verifica se a aposta pode ser feita
+		if (2 * aposta > fichas || aposta > 50) {//Verifica se a aposta pode ser feita
 			return false;
 		}
 
