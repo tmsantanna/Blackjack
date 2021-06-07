@@ -12,7 +12,7 @@ class Dealer extends Frame {
 
     private final Botao novaRodada;
 
-    Dealer(Mestre mestre, Runnable onNovaRodada) {
+    Dealer(Mestre mestre, Runnable onSave, Runnable onNovaRodada) {
         setTitle("Dealer");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -21,8 +21,7 @@ class Dealer extends Frame {
         new Cartas(this, mestre);
 
         Botao terminarJogo = new Botao("TERMINAR JOGO", 50, 600, () -> System.exit(-1));
-        Botao salvarJogo = new Botao("SALVAR JOGO", 694, 600, () -> {
-        });
+        Botao salvarJogo = new Botao("SALVAR JOGO", 694, 600, onSave);
 
         novaRodada = new Botao("NOVA RODADA", 363, 600, onNovaRodada);
         novaRodada.setVisible(false);

@@ -26,7 +26,6 @@ class Jogador extends Frame {
     private final Fichas fichas;
 
     Jogador(Mestre mestre,
-            String nome,
             int jogador,
             Consumer<Integer> onDouble,
             Consumer<Integer> onSplit,
@@ -37,7 +36,7 @@ class Jogador extends Frame {
             Consumer<Integer> onSurrender,
             Consumer<Integer> onQuit,
             BiConsumer<Integer, Integer> apostar) {
-        setTitle(nome);
+        setTitle(mestre.pegaNome(jogador));
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {

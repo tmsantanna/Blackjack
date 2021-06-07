@@ -7,6 +7,7 @@ package model;
 
 import model.Evento.Tipo;
 
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Mestre extends Observable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
@@ -16,6 +17,8 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 	private final Map<Jogador, Status> status = new HashMap<>();
 	private int vez = 0;
 	private boolean deal = true;
+
+	public static final String SAVE_PATH = Paths.get(System.getenv("appdata"), ".Blackjack").toString();
 
 	public Mestre(String nome) {//Vers�o com um nome
 		jogadores.add(new Jogador(nome));
@@ -398,6 +401,10 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 			notifyObservers(Tipo.FIM_DE_RODADA);
 			calcularResultados(true);
 		}
+	}
+
+	public void revalidar() {
+
 	}
 
 	public List<Jogador> pegaJogadores() {//Pega os jogadores

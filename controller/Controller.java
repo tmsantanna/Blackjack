@@ -10,6 +10,7 @@ import model.Mestre;
 import view.GUI;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.List;
 
 public class Controller {
@@ -36,15 +37,21 @@ public class Controller {
         mestre.addObserver(null, Controller::onProximoJogador, Evento.Tipo.PROXIMO_JOGADOR);
         mestre.addObserver(null, Controller::onBlackjack, Evento.Tipo.BLACKJACK);
 
-        GUI.mostraDealer(mestre, Controller::onNovaRodada);
-        GUI.mostraJogadores(mestre, nomes, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
+        GUI.mostraDealer(mestre, Controller::onSave, Controller::onNovaRodada);
+        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
                 Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
 
         mestre.comecarRodada();
     }
 
-    private static void carregarJogo() {
+    private static void carregarJogo(Mestre mestre) {
+        Controller.mestre = mestre;
 
+        GUI.mostraDealer(mestre, Controller::onSave, Controller::onNovaRodada);
+        GUI.mostraJogadores(mestre, Controller::onDouble, Controller::onSplit, Controller::onClear, Controller::onDeal,
+                Controller::onHit, Controller::onStand, Controller::onSurrender, Controller::onQuit, Controller::apostar);
+
+        mestre.revalidar();
     }
 
     private static void onDouble(int jogador) {
@@ -149,6 +156,41 @@ public class Controller {
         if (!mestre.comecarRodada()) {
             JOptionPane.showMessageDialog(null, "Todos os jogadores devem dar CLEAR ou QUIT!");
         }
+    }
+
+    private static void onSave() {
+        String nome = escolheNomeArquivo();
+
+        if (nome == null) return;
+
+        String arquivo = new File(Mestre.SAVE_PATH, nome + ".bjk").toString();
+
+        //TODO salvar arquivo
+
+        JOptionPane.showMessageDialog(null, "Jogo salvo!");
+    }
+
+    private static String escolheNomeArquivo() {
+        String nome = null;
+
+        do {
+            if (nome != null && !nome.trim().isEmpty() ) {
+                int result = JOptionPane.showConfirmDialog(null, "Já existe um jogo com esse nome!\nDeseja substituí-lo?");
+
+                switch (result) {
+                    case JOptionPane.YES_OPTION:
+                        return nome;
+                    case JOptionPane.CANCEL_OPTION:
+                    case JOptionPane.CLOSED_OPTION:
+                        return null;
+                }
+            }
+
+            nome = JOptionPane.showInputDialog(null, "Dê um nome a esse jogo.");
+
+        } while (new File(Mestre.SAVE_PATH, nome + ".bj").exists() || nome.trim().isEmpty());
+
+        return nome;
     }
 
 }

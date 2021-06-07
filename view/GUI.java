@@ -21,12 +21,13 @@ public class GUI {
 	private static Dealer dealer;
 	private static TelaInicial telaInicial;
 	private static List<Jogador> jogadores;
+	private static TelaLoad telaLoad;
 
 	private GUI() {}
 
-	public static void mostraDealer(Mestre mestre, Runnable onNovaRodada) {
+	public static void mostraDealer(Mestre mestre, Runnable onSave, Runnable onNovaRodada) {
 		if (dealer == null) {
-			dealer = new Dealer(mestre, onNovaRodada);
+			dealer = new Dealer(mestre, onSave, onNovaRodada);
 
 			Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
 			int x = (tela.width - GUI.LARGURA) / 2;
@@ -37,7 +38,6 @@ public class GUI {
 	}
 
 	public static void mostraJogadores(Mestre mestre,
-									   List<String> nomes,
 									   Consumer<Integer> onDouble,
 									   Consumer<Integer> onSplit,
 									   Consumer<Integer> onClear,
@@ -49,8 +49,8 @@ public class GUI {
 									   BiConsumer<Integer, Integer> apostar){
 		if (jogadores == null) {
 			jogadores = new ArrayList<>();
-			for (int i = 0; i < nomes.size(); i++) {
-				jogadores.add(new Jogador(mestre, nomes.get(i), i, onDouble, onSplit, onClear,
+			for (int i = 0; i < mestre.pegaNumJogadores(); i++) {
+				jogadores.add(new Jogador(mestre, i, onDouble, onSplit, onClear,
 						onDeal, onHit, onStand, onSurrender, onQuit, apostar));
 			}
 		}
@@ -80,15 +80,33 @@ public class GUI {
 		jogadores.remove(jogador).dispose();
 	}
 
-	public static void mostraTelaInicial(Consumer<List<String>> novoJogo, Runnable carregarJogo) {
+	public static void mostraTelaInicial(Consumer<List<String>> novoJogo, Consumer<Mestre> carregarJogo) {
 		if (telaInicial == null) {
 			telaInicial = new TelaInicial(novoJogo, carregarJogo);
 		}
+
 		telaInicial.setVisible(true);
+
+		if (telaLoad != null) {
+			telaLoad.setVisible(false);
+		}
 	}
 
 	public static void escondeTelaInicial() {
-		telaInicial.dispose();
+		telaInicial.setVisible(false);
+	}
+
+	public static void mostraLoad(Consumer<Mestre> onLoad, Runnable onCancel) {
+		if (telaLoad == null) {
+			telaLoad = new TelaLoad(onLoad, onCancel);
+		}
+
+		telaLoad.setVisible(true);
+		telaLoad.atualizaSaves(false);
+
+		if (telaInicial != null) {
+			telaInicial.setVisible(false);
+		}
 	}
 
 	public static void focarJanela(int jogador) {
