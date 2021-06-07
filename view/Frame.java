@@ -15,6 +15,7 @@ class Frame extends JFrame {
         setContentPane(new ContentPane());
         setLayout(null);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     void add(Componente c) {
