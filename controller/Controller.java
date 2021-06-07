@@ -37,16 +37,16 @@ public class Controller {
         GUI.escondeTelaInicial();
 
         mestre = new Mestre(nomes);
-        carregarPatida(mestre);
+        carregarPartida(mestre);
         mestre.comecarRodada();
     }
 
     private void onLoad(Mestre mestre) {
-        carregarPatida(mestre);
+        carregarPartida(mestre);
         mestre.revalidar();
     }
 
-    private void carregarPatida(Mestre mestre) {
+    private void carregarPartida(Mestre mestre) {
         this.mestre = mestre;
         mestre.removeObservers();
 
