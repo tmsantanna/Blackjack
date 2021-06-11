@@ -42,6 +42,7 @@ public class Controller {
     }
 
     private void onLoad(Mestre mestre) {
+        mestre.onLoad();
         carregarPartida(mestre);
         mestre.revalidar();
     }

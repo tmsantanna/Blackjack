@@ -412,8 +412,6 @@ public class Mestre extends Observable {// A fun��o dessa classe � manter 
 
 	public void revalidar() {
 		//Notifica todos os eventos novamente, em caso de load
-		observers = new ArrayList<>();
-		removeQueue = new ArrayList<>();
 		notifyObservers(-1, Tipo.REVALIDANDO);
 		for (Evento evento : eventHistory) {
 			if (evento.tipo != Tipo.BLACKJACK) {

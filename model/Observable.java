@@ -11,13 +11,19 @@ import java.util.*;
 
 public abstract class Observable {
 
-    protected transient List<Observers> observers = new ArrayList<>();
+    private transient List<Observers> observers = new ArrayList<>();
 
-    protected transient List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
+    private transient List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
 
     protected final List<Evento> eventHistory = new ArrayList<>();  //histórico de eventos, em caso de load
 
     private boolean notifying = false;
+
+    public void onLoad() {
+        //Recria as listas após o load
+        observers = new ArrayList<>();
+        removeQueue = new ArrayList<>();
+    }
 
     public void addObserver(Object parent, Observer observer, Tipo... tipos) {
         for (Observers observers : observers) {
