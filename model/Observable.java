@@ -11,9 +11,9 @@ import java.util.*;
 
 public abstract class Observable {
 
-    private final List<Observers> observers = new ArrayList<>();
+    protected transient List<Observers> observers = new ArrayList<>();
 
-    private final List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
+    protected transient List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
 
     protected final List<Evento> eventHistory = new ArrayList<>();  //histórico de eventos, em caso de load
 
