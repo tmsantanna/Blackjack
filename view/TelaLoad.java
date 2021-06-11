@@ -6,6 +6,8 @@ Thiago Melcop Sant’Anna
 package view;
 
 import model.Mestre;
+import controller.Controller;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.io.*;
 
 class TelaLoad extends Frame {
 
@@ -74,13 +77,26 @@ class TelaLoad extends Frame {
     }
 
     private void loadFile(String fileName) {
-        if (!new File(Mestre.SAVE_PATH, fileName).exists()) {
-            JOptionPane.showMessageDialog(null, "O Arquivo selecionado não existe!");
-            atualizaSaves(true);
+    	Mestre m;
+    	File root = new File(Mestre.SAVE_PATH);
+    	fileName = root+"/"+fileName;
+        try {
+            FileInputStream arquivo = new FileInputStream(fileName);
+            ObjectInputStream in = new ObjectInputStream(arquivo);
+            m = (Mestre) in.readObject();
+            in.close();
+            arquivo.close();
+         } catch (IOException i) {
+        	 System.out.println("Arquivo não encontrado");
+            i.printStackTrace();
             return;
-        }
-
-        //onLoad.accept(mestre); TODO carregar o arquivo
+         } catch (ClassNotFoundException c) {
+            System.out.println("Classe Mestre não foi encontrada");
+            c.printStackTrace();
+            return;
+         }
+        onLoad.accept(m);//Da load no Mestre
+        return;
     }
 
     private static List<String> pegaSaves() {
