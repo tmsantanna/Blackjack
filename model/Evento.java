@@ -5,9 +5,14 @@ Thiago Melcop Sant’Anna
 
 package model;
 
-public class Evento {
+public class Evento implements java.io.Serializable {
 
-    public final Mestre mestre;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7712166080584958595L;
+
+	public final Mestre mestre;
 
     public final int jogador;
 
