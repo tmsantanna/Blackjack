@@ -5,8 +5,12 @@ Thiago Melcop Sant’Anna
 
 package model;
 
-class Carta {
-    private int valor;//Valor da Carta em blackjack
+class Carta implements java.io.Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 357068984242353519L;
+	private int valor;//Valor da Carta em blackjack
     private final int num;//Valor da Carta de verdade Ás até Rei = 1 a 13
     private final int naipe;//1 Ouros, 2 Espadas, 3 Copas, 4 Paus
     private boolean visible;//Se a carta está sendo vista ou não
@@ -67,4 +71,3 @@ class Carta {
     }
 
 }
-
