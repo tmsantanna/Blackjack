@@ -8,7 +8,11 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-class Jogador {
+class Jogador implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9120338629285988509L;
 	private final String nome;
 	private final List<Carta> hand = new ArrayList<>();//Carta que o jogador tem é mão
 	private final List<Carta> splitHand = new ArrayList<>();//Carta que o jogador tem é mão
