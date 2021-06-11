@@ -10,7 +10,11 @@ import model.Evento.Tipo;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class Mestre extends Observable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
+public class Mestre extends Observable implements java.io.Serializable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4543567299381496352L;
 	private final List<Carta> baralho = new ArrayList<>();//Cartas no baralho
 	private final List<Jogador> jogadores = new ArrayList<>();
 	private final Dealer dealer = new Dealer(this);
