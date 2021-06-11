@@ -7,7 +7,11 @@ package model;
 
 import java.util.*;
 
-class Dealer {
+class Dealer implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7926001715215555885L;
 	private final List<Carta> mesa = new ArrayList<>();//Cartas na mesa
 	private final Mestre mestre;
 
