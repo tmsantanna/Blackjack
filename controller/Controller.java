@@ -6,12 +6,14 @@ Thiago Melcop Sant’Anna
 package controller;
 
 import model.Evento;
+
 import model.Mestre;
 import view.GUI;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.List;
+import java.io.*;
 
 public class Controller {
 
@@ -172,10 +174,19 @@ public class Controller {
 
         File root = new File(Mestre.SAVE_PATH);
         root.mkdirs();
-
-        String arquivo = new File(root, nome + ".bjk").toString();
-
-        //TODO salvar arquivo
+        nome = root + "/" + nome +".bkg";//Nome fica nome final
+     
+        
+        try {
+            FileOutputStream arquivo = new FileOutputStream(nome);
+            ObjectOutputStream out = new ObjectOutputStream(arquivo);
+            out.writeObject(this.mestre);
+            out.close();
+            arquivo.close();
+            System.out.printf("Serialized data is saved in %s",nome);
+         } catch (IOException i) {
+            i.printStackTrace();
+         }
 
         mostrarMensagem("Jogo salvo!");
     }
@@ -212,5 +223,4 @@ public class Controller {
 
         JOptionPane.showMessageDialog(null, mensagem);
     }
-
 }
