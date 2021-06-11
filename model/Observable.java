@@ -9,95 +9,100 @@ import model.Evento.Tipo;
 
 import java.util.*;
 
-public abstract class Observable {
+public abstract class Observable implements java.io.Serializable {
 
-    private transient List<Observers> observers = new ArrayList<>();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7405773150140148817L;
 
-    private transient List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
+	 private transient List<Observers> observers = new ArrayList<>();
 
-    protected final List<Evento> eventHistory = new ArrayList<>();  //histórico de eventos, em caso de load
+	    private transient List<Object> removeQueue = new ArrayList<>(); //lista de observer a serem removidos
 
-    private boolean notifying = false;
+	    protected final List<Evento> eventHistory = new ArrayList<>();  //histórico de eventos, em caso de load
 
-    public void onLoad() {
-        //Recria as listas após o load
-        observers = new ArrayList<>();
-        removeQueue = new ArrayList<>();
-    }
+	    private boolean notifying = false;
 
-    public void addObserver(Object parent, Observer observer, Tipo... tipos) {
-        for (Observers observers : observers) {
-            if (observers.parent == parent) {
-                observers.addObserver(observer, tipos);
-                return;
-            }
-        }
+	    public void onLoad() {
+	        //Recria as listas após o load
+	        observers = new ArrayList<>();
+	        removeQueue = new ArrayList<>();
+	    }
 
-        observers.add(new Observers(parent, observer, tipos));
-    }
+	    public void addObserver(Object parent, Observer observer, Tipo... tipos) {
+	        for (Observers observers : observers) {
+	            if (observers.parent == parent) {
+	                observers.addObserver(observer, tipos);
+	                return;
+	            }
+	        }
 
-    public void removeObserver(Object parent) {
-        removeQueue.add(parent);
+	        observers.add(new Observers(parent, observer, tipos));
+	    }
 
-        if (!notifying) {
-            removeObserverQueue();
-        }
-    }
+	    public void removeObserver(Object parent) {
+	        removeQueue.add(parent);
 
-    public void removeObservers() {
-        removeQueue.addAll(observers);
+	        if (!notifying) {
+	            removeObserverQueue();
+	        }
+	    }
 
-        if (!notifying) {
-            removeObserverQueue();
-        }
-    }
+	    public void removeObservers() {
+	        removeQueue.addAll(observers);
 
-    protected void notifyObservers(Evento evento, boolean salvarEvento) {
-        notifying = true;
+	        if (!notifying) {
+	            removeObserverQueue();
+	        }
+	    }
 
-        if (salvarEvento) {
-            eventHistory.add(evento);
-        }
+	    protected void notifyObservers(Evento evento, boolean salvarEvento) {
+	        notifying = true;
 
-        for (Observers observers : observers) {
-            observers.update(evento);
-        }
+	        if (salvarEvento) {
+	            eventHistory.add(evento);
+	        }
 
-        notifying = false;
+	        for (Observers observers : observers) {
+	            observers.update(evento);
+	        }
 
-        removeObserverQueue();
-    }
+	        notifying = false;
 
-    private void removeObserverQueue() {
-        observers.removeIf(observer -> removeQueue.contains(observer.parent));
-        removeQueue.clear();
-    }
+	        removeObserverQueue();
+	    }
 
-    //Guarda vários observers com um objeto pai
-    private static class Observers {
+	    private void removeObserverQueue() {
+	        observers.removeIf(observer -> removeQueue.contains(observer.parent));
+	        removeQueue.clear();
+	    }
 
-        final Object parent;
-        private final List<Observer> observers = new ArrayList<>();
-        private final List<List<Tipo>> tipos = new ArrayList<>();
+	    //Guarda vários observers com um objeto pai
+	    private static class Observers {
 
-        Observers(Object parent, Observer observer, Tipo[] tipos) {
-            this.parent = parent;
-            addObserver(observer, tipos);
-        }
+	        final Object parent;
+	        private final List<Observer> observers = new ArrayList<>();
+	        private final List<List<Tipo>> tipos = new ArrayList<>();
 
-        void addObserver(Observer observer, Tipo[] tipos) {
-            observers.add(observer);
-            this.tipos.add(Arrays.asList(tipos));
-        }
+	        Observers(Object parent, Observer observer, Tipo[] tipos) {
+	            this.parent = parent;
+	            addObserver(observer, tipos);
+	        }
 
-        void update(Evento evento) {
-            for (int index = 0; index < observers.size(); index++) {
-                if (tipos.get(index).contains(evento.tipo)) {
-                    observers.get(index).update(evento);
-                }
-            }
-        }
+	        void addObserver(Observer observer, Tipo[] tipos) {
+	            observers.add(observer);
+	            this.tipos.add(Arrays.asList(tipos));
+	        }
 
-    }
+	        void update(Evento evento) {
+	            for (int index = 0; index < observers.size(); index++) {
+	                if (tipos.get(index).contains(evento.tipo)) {
+	                    observers.get(index).update(evento);
+	                }
+	            }
+	        }
 
-}
+	    }
+
+	}
