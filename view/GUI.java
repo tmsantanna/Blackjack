@@ -20,7 +20,7 @@ public class GUI {
 
 	private static Dealer dealer;
 	private static TelaInicial telaInicial;
-	private static List<Jogador> jogadores;
+	private static Jogador[] jogadores;
 	private static TelaLoad telaLoad;
 
 	private GUI() {}
@@ -49,39 +49,42 @@ public class GUI {
 									   BiConsumer<Integer, Integer> apostar) {
 		if (jogadores != null) {
 			for (Jogador jogador : jogadores) {
-				jogador.dispose();
+				if (jogador != null) {
+					jogador.dispose();
+				}
 			}
 		}
 
-		jogadores = new ArrayList<>();
-		for (int i = 0; i < mestre.pegaNumJogadores(); i++) {
-			jogadores.add(new Jogador(mestre, i, onDouble, onSplit, onClear,
-					onDeal, onHit, onStand, onSurrender, onQuit, apostar));
+		jogadores = new Jogador[mestre.pegaNumTotalJogadores()];
+
+		for (int i : mestre.pegaIndiceJogadores()) {
+			jogadores[i] = new Jogador(mestre, i, onDouble, onSplit, onClear,
+					onDeal, onHit, onStand, onSurrender, onQuit, apostar);
 		}
 
 		Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
 
 		int x = (tela.width - GUI.LARGURA) / 2;
 
-		if (jogadores.size() > 1) {
-			x = (tela.width - GUI.LARGURA) / (jogadores.size() - 1);
+		if (mestre.pegaNumJogadores() > 1) {
+			x = (tela.width - GUI.LARGURA) / (mestre.pegaNumJogadores() - 1);
 		}
 
 		int y = 9 * (tela.height - GUI.ALTURA) / 10;
 
-		for (int i = jogadores.size() - 1; i >= 0; i--) {
-			jogadores.get(i).setVisible(true);
+		for (int i : mestre.pegaIndiceJogadores()) {
+			jogadores[i].setVisible(true);
 
-			if (jogadores.size() == 1) {
-				jogadores.get(i).setLocation(x, y);
+			if (mestre.pegaNumJogadores() == 1) {
+				jogadores[i].setLocation(x, y);
 			} else {
-				jogadores.get(i).setLocation(x * i, y);
+				jogadores[i].setLocation(x * i, y);
 			}
 		}
 	}
 
 	public static void escondeJogador(int jogador) {
-		jogadores.remove(jogador).dispose();
+		jogadores[jogador].dispose();
 	}
 
 	public static void mostraTelaInicial(Consumer<List<String>> novoJogo, Consumer<Mestre> carregarJogo) {
@@ -93,7 +96,9 @@ public class GUI {
 
 		if (jogadores != null) {
 			for (Jogador jogador : jogadores) {
-				jogador.setVisible(false);
+				if (jogador != null) {
+					jogador.setVisible(false);
+				}
 			}
 		}
 
@@ -130,8 +135,8 @@ public class GUI {
 	public static void focarJanela(int jogador) {
 		if (jogador == -1) {
 			dealer.requestFocus();
-		} else {
-			jogadores.get(jogador).requestFocus();
+		} else if (jogador < jogadores.length && jogadores[jogador] != null) {
+			jogadores[jogador].requestFocus();
 		}
 	}
 

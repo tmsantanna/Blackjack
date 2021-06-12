@@ -9,6 +9,7 @@ import model.Evento.Tipo;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Mestre extends Observable implements java.io.Serializable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
 	/**
@@ -79,17 +80,17 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 	}
 
 	public void removeJogador() { //Remove um jogador da lista
-		Jogador jogador = jogadores.get(vez);
-		jogador.clearHand();
-		status.remove(jogador);
-		jogadores.remove(vez);
+		removeJogador(vez);
 	}
 
 	public void removeJogador(int j) { //Remove um jogador da lista
 		Jogador jogador = jogadores.get(j);
 		jogador.clearHand();
-		status.remove(jogador);
-		jogadores.remove(j);
+		status.put(jogador, Status.REMOVIDO);
+
+		if (j == vez) {
+			proximoJogador();
+		}
 	}
 
 	public void clearCartas() {//Tira cartas de jogo da m�o dos jogadores e da mesa
@@ -104,12 +105,12 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 	}
 
 	public void dealStart() {//Cartas no inicio da rodada
-		for (Jogador jogador : jogadores) {
+		for (Jogador jogador : pegaJogadores()) {
 			dealCarta(jogador);
 		}
 		dealMesaCarta(false);
 
-		for (Jogador jogador : jogadores) {
+		for (Jogador jogador : pegaJogadores()) {
 			dealCarta(jogador);
 		}
 		dealMesaCarta();
@@ -195,23 +196,23 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 	public boolean comecarRodada() {
 		//Caso algum jogador não tenha dado clear, não inicia a rodada
 		for (Status value : status.values()) {
-			if (value != Status.CLEAR) {
+			if (value != Status.CLEAR && value != Status.REMOVIDO) {
 				return false;
 			}
 		}
 
-		for (Jogador jogador : jogadores) {
+		for (Jogador jogador : pegaJogadores()) {
 			status.put(jogador, Status.JOGANDO);
 		}
 
 		deal = true;
-		vez = 0;
+		vez = jogadores.indexOf(pegaJogadores().get(0)); // indicr do primeiro jogador
 		dealer.clearMesa();
 
 		createBaralho();
 		shuffleBaralho();
 
-		for (Jogador jogador : jogadores) {
+		for (Jogador jogador : pegaJogadores()) {
 			jogador.clearHand();
 			notifyObservers(jogadores.indexOf(jogador), Tipo.MUDANCA_NA_APOSTA, 0f, jogador.pegaFichas());
 		}
@@ -226,13 +227,13 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		int ultimoJogador = vez;
 
 		vez++;
-		while (vez < pegaNumJogadores() && status.get(jogadores.get(vez)) != Status.JOGANDO) {
+		while (vez < jogadores.size() && status.get(jogadores.get(vez)) != Status.JOGANDO) {
 			vez++;
 		}
 
-		if (vez == pegaNumJogadores()) {
+		if (vez >= jogadores.size()) {
 			if (deal) {
-				vez = 0;
+				vez = jogadores.indexOf(pegaJogadores().get(0)); // indice do primeiro jogador que está jogando
 				deal = false;
 				notifyObservers(ultimoJogador, Tipo.PROXIMO_JOGADOR, vez);
 				dealStart();
@@ -324,7 +325,7 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 
 		if (vez == pegaNumJogadores()) {
 			if (deal) {
-				vez = 0;
+				vez = jogadores.indexOf(pegaJogadores().get(0)); // indice do primeiro jogador que está jogando
 				deal = false;
 				notifyObservers(jogador, Tipo.PROXIMO_JOGADOR, vez);
 				dealStart();
@@ -333,6 +334,8 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 				notifyObservers(jogador, Tipo.PROXIMO_JOGADOR, vez);
 				dealerTurn();
 			}
+		} else {
+			notifyObservers(jogador, Tipo.PROXIMO_JOGADOR, jogador);
 		}
 	}
 
@@ -340,7 +343,7 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		notifyObservers(-1, Tipo.MOSTRAR_CARTAS);
 
 		dealer.pegaMesa().get(0).flip();
-		dealer.jogar(jogadores);
+		dealer.jogar();
 
 		if (dealer.caclMesa() > 21) {
 			notifyObservers(-1, Tipo.PASSOU_DE_21);
@@ -354,7 +357,7 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 	private void calcularResultados(boolean blackjackDealer) {
 		//Calcula quanto cada jogador ganhou ou perdeu
 
-		for (Jogador jogador : jogadores) {
+		for (Jogador jogador : pegaJogadores()) {
 			if (status.get(jogador) != Status.SURRENDER) {
 				boolean blackjack = status.get(jogador) == Status.BLACKJACK;
 				float multiplicador = multiplicadorAposta(blackjackDealer, blackjack, jogador.caclHand(false));
@@ -387,14 +390,9 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		return -1;
 	}
 
-	float multiplicadorAposta(boolean blackjackDealer, int jogador, boolean segunda) {
-		int valorMao = jogadores.get(jogador).caclHand(segunda);
-		return multiplicadorAposta(blackjackDealer, status.get(jogadores.get(jogador)) == Status.BLACKJACK, valorMao);
-	}
-
 	public void checkBlackjack() { //Checa se ocorreu um Blackjack
-		for (int index = 0; index < jogadores.size(); index++) {
-			Jogador jogador = jogadores.get(index);
+		for (int index = 0; index < pegaJogadores().size(); index++) {
+			Jogador jogador = pegaJogadores().get(index);
 
 			if (jogador.caclHand() == 21) { //Se o jogador tem 21
 				status.put(jogador, Status.BLACKJACK);
@@ -425,7 +423,15 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		notifyObservers(new Evento(this, -1, Tipo.REVALIDADO), false);
 	}
 
-	public List<Jogador> pegaJogadores() {//Pega os jogadores
+	public List<Jogador> pegaJogadores() {//Pega os jogadores que ainda estão jogando
+		List<Jogador> jogadores = new ArrayList<>();
+
+		for (Jogador jogador : this.jogadores) {
+			if (status.get(jogador) != Status.REMOVIDO) {
+				jogadores.add(jogador);
+			}
+		}
+
 		return jogadores;
 	}
 
@@ -438,7 +444,15 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 	}
 
 	public int pegaNumJogadores() {
+		return pegaJogadores().size();
+	}
+
+	public int pegaNumTotalJogadores() {
 		return jogadores.size();
+	}
+
+	public List<Integer> pegaIndiceJogadores() {
+		return pegaJogadores().stream().map(jogadores::indexOf).collect(Collectors.toList());
 	}
 
 	public boolean podeJogar(int jogador) {
@@ -530,6 +544,6 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		notifyObservers(vez, tipo, args);
 	}
 
-	private enum Status { JOGANDO, CLEAR, BLACKJACK, SURRENDER }
+	private enum Status { JOGANDO, CLEAR, BLACKJACK, SURRENDER, REMOVIDO }
 
 }

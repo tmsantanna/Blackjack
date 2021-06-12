@@ -118,10 +118,7 @@ class Jogador extends Frame {
     }
 
     private void onJogadorRemovido(Evento evento) {
-        if (evento.jogador < jogador) {
-            jogador--;  //atualiza o indice do jogador quando um é removido
-            repaint();
-        } else if (evento.jogador == jogador) {
+        if (evento.jogador == jogador) {
             GUI.escondeJogador(jogador);
             evento.mestre.removeObserver(this);
         }
