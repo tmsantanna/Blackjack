@@ -59,5 +59,43 @@ class Dealer implements java.io.Serializable {
 			mestre.dealMesaCarta();
 		}
 	}
+	void jogar(List<Jogador> jogadores) {
+		while (caclMesa() < 17) {
+			mestre.dealMesaCarta();
+		}
+		
+		//Setup da IA
+		int mao;
+		int flag_jogadoresPerdem = 0;
+		int flag_jogadoresVencem = 0;
+		int flag_jogadoresExplodem = 0;
+		
+		if (caclMesa()<21) {//IA
+			for(Jogador jogador: jogadores) {
+				mao = jogador.caclHand();
+				
+				if(mao>21 || mao<caclMesa()){
+					flag_jogadoresPerdem++;
+					if (mao>21) {
+						flag_jogadoresExplodem++;
+					}
+				}
+				else {
+					
+					flag_jogadoresVencem++;
+				}
+			}
+		}
+		
+		if (flag_jogadoresPerdem == flag_jogadoresExplodem && caclMesa()!=21 && flag_jogadoresVencem > 0) {//Se todos os jogadores que perderam explodiram, portanto existe pouco risco em tentar vencer os que restaram
+			mestre.dealMesaCarta();
+		}
+		
+		else if(flag_jogadoresVencem>flag_jogadoresPerdem && caclMesa()<19) {//Se mais jogadores estão vencendo que perdendo, e ainda tem alguma chance de puxar uma carta baixa, faça
+			mestre.dealMesaCarta();
+		}
+		
+		
+	}
 
 }
