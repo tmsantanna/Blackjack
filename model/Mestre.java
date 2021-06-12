@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Mestre extends Observable implements java.io.Serializable {// A fun��o dessa classe � manter a no��o do jogo, do que est� acontecendo, jogadores e tudo mais.
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4543567299381496352L;
 	private final List<Carta> baralho = new ArrayList<>();//Cartas no baralho
@@ -340,7 +340,7 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 		notifyObservers(-1, Tipo.MOSTRAR_CARTAS);
 
 		dealer.pegaMesa().get(0).flip();
-		dealer.jogar();
+		dealer.jogar(jogadores);
 
 		if (dealer.caclMesa() > 21) {
 			notifyObservers(-1, Tipo.PASSOU_DE_21);
@@ -416,13 +416,13 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 
 	public void revalidar() {
 		//Notifica todos os eventos novamente, em caso de load
-		notifyObservers(-1, Tipo.REVALIDANDO);
+		notifyObservers(new Evento(this, -1, Tipo.REVALIDANDO), false);
 		for (Evento evento : eventHistory) {
 			if (evento.tipo != Tipo.BLACKJACK) {
 				notifyObservers(evento, false);
 			}
 		}
-		notifyObservers(-1, Tipo.REVALIDADO);
+		notifyObservers(new Evento(this, -1, Tipo.REVALIDADO), false);
 	}
 
 	public List<Jogador> pegaJogadores() {//Pega os jogadores

@@ -22,56 +22,49 @@ class TelaLoad extends Frame {
 
     private final Consumer<Mestre> onLoad;
 
-    private final JScrollPane scroll;
-
-    private final JPanel grid = new JPanel();
+    private final JPanel saves = new JPanel();
 
     TelaLoad(Consumer<Mestre> onLoad, Runnable onCancel) {
         setTitle("Load");
-        grid.setBackground(Color.BLACK);
+        saves.setBackground(Color.BLACK);
         getContentPane().setBackground(Color.BLACK);
 
         this.onLoad = onLoad;
 
-        //mostrar todos os saves em um ScrollPane?
-
         getContentPane().add(new Botao("VOLTAR", 380, 600, onCancel));
 
-        grid.setLayout(new BoxLayout(grid, BoxLayout.Y_AXIS));
+        saves.setLayout(null);
 
-        scroll = new JScrollPane(grid);
+        JScrollPane scroll = new JScrollPane(saves);
         scroll.getVerticalScrollBar().setUnitIncrement(6);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBounds(0, 0, GUI.LARGURA - 6, 580);
         scroll.setBorder(null);
         getContentPane().add(scroll);
 
-        mostraSaves();
+        atualizaSaves();
     }
 
-    void atualizaSaves(boolean manterPosicaoScroll) {
-        grid.removeAll();
-        mostraSaves();
+    void atualizaSaves() {
+        saves.removeAll();
 
-        // força o scroll a atualizar, para evitar um bug
-        int posicaoScroll = scroll.getVerticalScrollBar().getValue();
-        scroll.getVerticalScrollBar().setValue(1);
-        scroll.getVerticalScrollBar().setValue(manterPosicaoScroll ? posicaoScroll : 0);
-    }
-
-    private void mostraSaves() {
-        grid.add(Box.createRigidArea(new Dimension(0, 20)));
+        int y = 20;
 
         for (String pegaSave : pegaSaves()) {
-            grid.add(novoBotao(pegaSave));
-            grid.add(Box.createRigidArea(new Dimension(0, 10)));
+            saves.add(novoBotao(pegaSave, y));
+            y += 60;
         }
+
+        saves.setPreferredSize(new Dimension(saves.getWidth(), y));
     }
 
-    private Botao novoBotao(String fileName) {
+    private Botao novoBotao(String fileName, int y) {
         int indicePonto = fileName.lastIndexOf('.');
         String texto = indicePonto < 0 ? fileName : fileName.substring(0, indicePonto);
 
         Botao botao = new Botao(texto, 0, 0, () -> loadFile(fileName));
+        botao.setLocation((GUI.LARGURA - botao.getWidth()) / 2, y);
+
         botao.setAlignmentX(CENTER_ALIGNMENT);
         return botao;
     }

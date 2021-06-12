@@ -44,6 +44,7 @@ public class Controller {
     }
 
     private void onLoad(Mestre mestre) {
+        GUI.escondeTelaLoad();
         mestre.onLoad();
         carregarPartida(mestre);
         mestre.revalidar();
@@ -175,20 +176,17 @@ public class Controller {
         File root = new File(Mestre.SAVE_PATH);
         root.mkdirs();
         nome = root + "/" + nome +".bkg";//Nome fica nome final
-     
-        
+
         try {
             FileOutputStream arquivo = new FileOutputStream(nome);
             ObjectOutputStream out = new ObjectOutputStream(arquivo);
             out.writeObject(this.mestre);
             out.close();
             arquivo.close();
-            System.out.printf("Serialized data is saved in %s",nome);
-         } catch (IOException i) {
+            mostrarMensagem("Jogo salvo!");
+        } catch (IOException i) {
             i.printStackTrace();
-         }
-
-        mostrarMensagem("Jogo salvo!");
+        }
     }
 
     private void onRevalidate(Evento evento) {
@@ -213,7 +211,7 @@ public class Controller {
 
             nome = JOptionPane.showInputDialog(null, "Dê um nome a esse jogo.");
 
-        } while (new File(Mestre.SAVE_PATH, nome + ".bj").exists() || nome.trim().isEmpty());
+        } while (new File(Mestre.SAVE_PATH, nome + ".bkg").exists() || nome.trim().isEmpty());
 
         return nome;
     }

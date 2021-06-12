@@ -120,7 +120,7 @@ public class GUI {
 		}
 
 		telaLoad.setVisible(true);
-		telaLoad.atualizaSaves(false);
+		telaLoad.atualizaSaves();
 
 		if (telaInicial != null) {
 			telaInicial.setVisible(false);
