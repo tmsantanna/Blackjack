@@ -231,7 +231,7 @@ public class Mestre extends Observable implements java.io.Serializable {// A fun
 			vez++;
 		}
 
-		if (vez >= jogadores.size()) {
+		if (vez >= jogadores.size() && pegaNumJogadores() > 0) {
 			if (deal) {
 				vez = jogadores.indexOf(pegaJogadores().get(0)); // indice do primeiro jogador que está jogando
 				deal = false;
